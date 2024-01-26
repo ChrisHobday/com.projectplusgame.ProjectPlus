@@ -1,0 +1,1 @@
+This repo will be a FPM Flatpak, the manifest, and source to build it. 
