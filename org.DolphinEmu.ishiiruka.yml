@@ -1,7 +1,7 @@
 app-id: org.DolphinEmu.ishiiruka
-runtime: org.kde.Platform
-runtime-version: '6.6'
-sdk: org.kde.Sdk
+runtime: org.gnome.Platform
+runtime-version: '45'
+sdk: org.gnome.Sdk
 command: ishiiruka
 rename-desktop-file: ishiiruka.desktop
 rename-icon: ishiiruka
@@ -64,7 +64,7 @@ modules:
         sha256: 0ed2a69fe6ee6cbffd2fe16f85116db737f17fb1e79bfb812d893cf15c728399
 
   - name: ishiiruka
-    buildsystem: cmake-ninja
+    buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_ALSA=OFF
@@ -100,6 +100,54 @@ modules:
       # version strings must match exactly for online multiplayer
       # - type: patch
       #   path: nodirtyversion.patch
+      # Patch hash for netplay
+
+
+
+
+
+
+
+
+
+      - type: shell
+        commands:
+          - |
+            echo "Patching tarball..."
+            FPPVERSION="2.29"
+            COMMITHASH="81e0a8f8a53f429b341d440ddb2d2b7802b66d52"
+            sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo ${COMMITHASH}|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+            sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSION|g" CMakeLists.txt # ensures compatibility w/ netplay
+            sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+      # Patch DiscExtractor.h
+      - type: shell
+        commands:
+          - |
+            echo "Patching DiscExtractor.h"
+            sed -i "s|#include <optional>|#include <optional>\n#include <string>|g" Source/Core/DiscIO/DiscExtractor.h
+      # Patch wxWidgets3
+      - type: shell
+        commands:
+          - |
+              echo "Patching wxWidgets3"
+              sed -i "s| OR NOT X11_Xinerama_FOUND||g" Externals/wxWidgets3/CMakeLists.txt
+              sed -i "s|needs Xinerama and|needs|g" Externals/wxWidgets3/CMakeLists.txt
+              sed -i "s|\t\t\${X11_Xinerama_LIB}||g" Externals/wxWidgets3/CMakeLists.txt
+      # Move wx files into source
+      - type: shell
+        commands:
+          - |
+            echo "Moving wx files into source"
+            cp Externals/wxWidgets3/include/wx Source/Core/ -r
+            cp Externals/wxWidgets3/wx/* Source/Core/wx/
+
+
+
+
+
+
+
+
       - type: file
         path: org.DolphinEmu.ishiiruka.appdata.xml
       - type: script
