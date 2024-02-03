@@ -1,7 +1,7 @@
 app-id: org.DolphinEmu.ishiiruka
-runtime: org.gnome.Platform
-runtime-version: '45'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
 command: ishiiruka
 rename-desktop-file: ishiiruka.desktop
 rename-icon: ishiiruka
@@ -21,16 +21,22 @@ finish-args:
   - --talk-name=org.freedesktop.ScreenSaver
 modules:
 
+  # - name: pango-1.42
+  #   sources:
+  #   - type: archive
+  #     url: https://download.gnome.org/sources/pango/1.42/pango-1.42.4.tar.xz
+  #     sha256: 1d2b74cd63e8bd41961f2f8d952355aa0f9be6002b52c8aa7699d9f5da597c9d
+
   - name: gtk2
     cleanup:
     - "/bin"
-    - "/share/gtk-2.0"
-    - "/share/aclocal"
+    # - "/share/gtk-2.0"
+    # - "/share/aclocal"
     - "/share/gtk-doc"
-    - "/lib/pkgconfig"
-    - "/lib/gtk-2.0/include"
-    - "/include"
-    - "*.la"
+    # - "/lib/pkgconfig"
+    # - "/lib/gtk-2.0/include"
+    # - "/include"
+    # - "*.la"
     x-cpe:
       product: gtk+
     config-opts:
@@ -39,30 +45,45 @@ modules:
     - "--disable-introspection"
     - "--with-xinput=xfree"
     sources:
-    - type: archive
-      url: https://download.gnome.org/sources/gtk+/2.99/gtk+-2.99.3.tar.bz2
-      sha256: 03dd37fd89fe0f0cea688cb077192b5ff95325b66d53d724c7511d36b6e90496
     # - type: archive
     #   url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.33.tar.xz
     #   sha256: ac2ac757f5942d318a311a54b0c80b5ef295f299c2a73c632f6bfb1ff49cc6da
+    - type: archive
+      url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz
+      sha256: b6c8a93ddda5eabe3bfee1eb39636c9a03d2a56c7b62828b359bf197943c582e
+    # - type: archive
+    #   url: https://download.gnome.org/sources/gtk+/2.4/gtk+-2.4.9.tar.bz2
+    #   sha256: d88f79b7bffbc9682a317835b6120dcfb360160a9bb7c6130841232585c30d2c
+    # - type: archive
+    #   url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.9.tar.xz
+    #   sha256: 84204bf24cac739fd979943127e7b29cb46b1017684aa24dce630faa01bcb61d
+    # - type: archive
+    #   url: https://download.gnome.org/sources/gtk+/2.99/gtk+-2.99.3.tar.bz2
+    #   sha256: 03dd37fd89fe0f0cea688cb077192b5ff95325b66d53d724c7511d36b6e90496
+    # - type: patch
+    #   path: gtk+-2.24-gimp-issue-2828-0001.patch
+    # - type: patch
+    #   path: gtk+-2.24-gimp-issue-2828-0002.patch
+    # - type: patch
+    #   path: gtk-2.24-bug795635.patch
 
-  # needed for the bluetooth passthrough feature to work
-  - name: libusb
-    config-opts:
-      - --disable-static
-    cleanup:
-      - /include
-      - /lib/*.la
-      - /lib/pkgconfig
-    sources:
-      - type: archive
-        url: https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2
-        sha256: 12ce7a61fc9854d1d2a1ffe095f7b5fac19ddba095c259e6067a46500381b5a5
-        x-checker-data:
-          type: anitya
-          project-id: 1749
-          stable-only: true
-          url-template: https://github.com/libusb/libusb/releases/download/v$version/libusb-$version.tar.bz2
+  # # needed for the bluetooth passthrough feature to work
+  # - name: libusb
+  #   config-opts:
+  #     - --disable-static
+  #   cleanup:
+  #     - /include
+  #     - /lib/*.la
+  #     - /lib/pkgconfig
+  #   sources:
+  #     - type: archive
+  #       url: https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2
+  #       sha256: 12ce7a61fc9854d1d2a1ffe095f7b5fac19ddba095c259e6067a46500381b5a5
+  #       x-checker-data:
+  #         type: anitya
+  #         project-id: 1749
+  #         stable-only: true
+  #         url-template: https://github.com/libusb/libusb/releases/download/v$version/libusb-$version.tar.bz2
 
   # enables motion controls on non-wii controllers (switch, ps4, etc)
   # requires a udev rule enabling Motion Sensors access
@@ -81,18 +102,17 @@ modules:
           stable-only: true
           url-template: https://www.freedesktop.org/software/libevdev/libevdev-$version.tar.xz
 
-  # needed for screensaver inhibition
-  - name: xdg-screensaver-shim
-    buildsystem: meson
-    sources:
-      - type: archive
-        url: https://github.com/Unrud/xdg-screensaver-shim/archive/0.0.2.tar.gz
-        sha256: 0ed2a69fe6ee6cbffd2fe16f85116db737f17fb1e79bfb812d893cf15c728399
+  # # needed for screensaver inhibition
+  # - name: xdg-screensaver-shim
+  #   buildsystem: meson
+  #   sources:
+  #     - type: archive
+  #       url: https://github.com/Unrud/xdg-screensaver-shim/archive/0.0.2.tar.gz
+  #       sha256: 0ed2a69fe6ee6cbffd2fe16f85116db737f17fb1e79bfb812d893cf15c728399
 
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
-      - -no-parallel-make: true
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_ALSA=OFF
       - -DENABLE_SDL=ON
@@ -129,15 +149,6 @@ modules:
       # - type: patch
       #   path: nodirtyversion.patch
       # Patch hash for netplay
-
-
-
-
-
-
-
-
-
       - type: shell
         commands:
           - |
