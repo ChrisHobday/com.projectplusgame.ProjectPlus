@@ -30,13 +30,13 @@ modules:
   - name: gtk2
     cleanup:
     - "/bin"
-    # - "/share/gtk-2.0"
-    # - "/share/aclocal"
+    - "/share/gtk-2.0"
+    - "/share/aclocal"
     - "/share/gtk-doc"
-    # - "/lib/pkgconfig"
-    # - "/lib/gtk-2.0/include"
-    # - "/include"
-    # - "*.la"
+    - "/lib/pkgconfig"
+    - "/lib/gtk-2.0/include"
+    - "/include"
+    - "*.la"
     x-cpe:
       product: gtk+
     config-opts:
@@ -113,6 +113,7 @@ modules:
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
+      - --debug-output
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_ALSA=OFF
       - -DENABLE_SDL=ON
