@@ -29,14 +29,14 @@ modules:
 
   - name: gtk2
     cleanup:
-    - "/bin"
-    - "/share/gtk-2.0"
-    - "/share/aclocal"
-    - "/share/gtk-doc"
-    - "/lib/pkgconfig"
-    - "/lib/gtk-2.0/include"
-    - "/include"
-    - "*.la"
+    # - "/bin"
+    # - "/share/gtk-2.0"
+    # - "/share/aclocal"
+    # - "/share/gtk-doc"
+    # - "/lib/pkgconfig"
+    # - "/lib/gtk-2.0/include"
+    # - "/include"
+    # - "*.la"
     x-cpe:
       product: gtk+
     config-opts:
@@ -157,14 +157,18 @@ modules:
     config-opts:
       # - --debug-output
       - -DLINUX_LOCAL_DEV=true
+      - -DGTK2_GLIBCONFIG_INCLUDE_DIR=${glib}/lib/glib-2.0/include
+      - -DGTK2_GDKCONFIG_INCLUDE_DIR=${gtk2}/lib/gtk-2.0/include
+      - -DGTK2_INCLUDE_DIRS=${gtk2}/lib/gtk-2.0
+      - -DENABLE_LTO=True
+      - -DCMAKE_INSTALL_PREFIX=/usr
       - -DCMAKE_BUILD_TYPE=Release
-      - -DENABLE_CUBEB=OFF
       - -DENABLE_ALSA=OFF
       - -DENABLE_SDL=ON
       - -DENABLE_EVDEV=ON
       - -DDISTRIBUTOR=Flathub
     cleanup:
-      - /share/man
+      # - /share/man
     post-install:
       - install -D -t ${FLATPAK_DEST}/bin/ ishiiruka
       - install -Dm644 -t ${FLATPAK_DEST}/share/appdata/ org.DolphinEmu.ishiiruka.appdata.xml
