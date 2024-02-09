@@ -29,14 +29,14 @@ modules:
 
   - name: gtk2
     cleanup:
-    # - "/bin"
-    # - "/share/gtk-2.0"
-    # - "/share/aclocal"
-    # - "/share/gtk-doc"
-    # - "/lib/pkgconfig"
-    # - "/lib/gtk-2.0/include"
-    # - "/include"
-    # - "*.la"
+    - "/bin"
+    - "/share/gtk-2.0"
+    - "/share/aclocal"
+    - "/share/gtk-doc"
+    - "/lib/pkgconfig"
+    - "/lib/gtk-2.0/include"
+    - "/include"
+    - "*.la"
     x-cpe:
       product: gtk+
     config-opts:
@@ -45,27 +45,9 @@ modules:
     - "--disable-introspection"
     - "--with-xinput=xfree"
     sources:
-    # - type: archive
-    #   url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.33.tar.xz
-    #   sha256: ac2ac757f5942d318a311a54b0c80b5ef295f299c2a73c632f6bfb1ff49cc6da
     - type: archive
       url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz
       sha256: b6c8a93ddda5eabe3bfee1eb39636c9a03d2a56c7b62828b359bf197943c582e
-    # - type: archive
-    #   url: https://download.gnome.org/sources/gtk+/2.4/gtk+-2.4.9.tar.bz2
-    #   sha256: d88f79b7bffbc9682a317835b6120dcfb360160a9bb7c6130841232585c30d2c
-    # - type: archive
-    #   url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.9.tar.xz
-    #   sha256: 84204bf24cac739fd979943127e7b29cb46b1017684aa24dce630faa01bcb61d
-    # - type: archive
-    #   url: https://download.gnome.org/sources/gtk+/2.99/gtk+-2.99.3.tar.bz2
-    #   sha256: 03dd37fd89fe0f0cea688cb077192b5ff95325b66d53d724c7511d36b6e90496
-    # - type: patch
-    #   path: gtk+-2.24-gimp-issue-2828-0001.patch
-    # - type: patch
-    #   path: gtk+-2.24-gimp-issue-2828-0002.patch
-    # - type: patch
-    #   path: gtk-2.24-bug795635.patch
 
   # - name: wxwidgets
   #   rm-configure: true
@@ -109,23 +91,23 @@ modules:
   #     - /lib/wx
   #     - /share/bakefile
 
-  # # needed for the bluetooth passthrough feature to work
-  # - name: libusb
-  #   config-opts:
-  #     - --disable-static
-  #   cleanup:
-  #     - /include
-  #     - /lib/*.la
-  #     - /lib/pkgconfig
-  #   sources:
-  #     - type: archive
-  #       url: https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2
-  #       sha256: 12ce7a61fc9854d1d2a1ffe095f7b5fac19ddba095c259e6067a46500381b5a5
-  #       x-checker-data:
-  #         type: anitya
-  #         project-id: 1749
-  #         stable-only: true
-  #         url-template: https://github.com/libusb/libusb/releases/download/v$version/libusb-$version.tar.bz2
+  # needed for the bluetooth passthrough feature to work
+  - name: libusb
+    config-opts:
+      - --disable-static
+    cleanup:
+      - /include
+      - /lib/*.la
+      - /lib/pkgconfig
+    sources:
+      - type: archive
+        url: https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2
+        sha256: 12ce7a61fc9854d1d2a1ffe095f7b5fac19ddba095c259e6067a46500381b5a5
+        x-checker-data:
+          type: anitya
+          project-id: 1749
+          stable-only: true
+          url-template: https://github.com/libusb/libusb/releases/download/v$version/libusb-$version.tar.bz2
 
   # enables motion controls on non-wii controllers (switch, ps4, etc)
   # requires a udev rule enabling Motion Sensors access
@@ -157,16 +139,16 @@ modules:
     config-opts:
       # - --debug-output
       - -DLINUX_LOCAL_DEV=true
-      - -DGTK2_GLIBCONFIG_INCLUDE_DIR=${glib}/lib/glib-2.0/include
-      - -DGTK2_GDKCONFIG_INCLUDE_DIR=${gtk2}/lib/gtk-2.0/include
-      - -DGTK2_INCLUDE_DIRS=${gtk2}/lib/gtk-2.0
-      - -DENABLE_LTO=True
-      - -DCMAKE_INSTALL_PREFIX=/usr
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DENABLE_ALSA=OFF
-      - -DENABLE_SDL=ON
-      - -DENABLE_EVDEV=ON
-      - -DDISTRIBUTOR=Flathub
+      # - -DGTK2_GLIBCONFIG_INCLUDE_DIR=${glib}/lib/glib-2.0/include
+      # - -DGTK2_GDKCONFIG_INCLUDE_DIR=${gtk2}/lib/gtk-2.0/include
+      # - -DGTK2_INCLUDE_DIRS=${gtk2}/lib/gtk-2.0
+      # - -DENABLE_LTO=True
+      # - -DCMAKE_INSTALL_PREFIX=/usr
+      # - -DCMAKE_BUILD_TYPE=Release
+      # - -DENABLE_ALSA=OFF
+      # - -DENABLE_SDL=ON
+      # - -DENABLE_EVDEV=ON
+      # - -DDISTRIBUTOR=Flathub
     cleanup:
       # - /share/man
     post-install:
@@ -176,10 +158,14 @@ modules:
       - desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka'
         /app/share/applications/ishiiruka.desktop
     sources:
+      # - type: git
+      #   # url: https://github.com/jlambert360/Ishiiruka/archive/81e0a8f8a53f429b341d440ddb2d2b7802b66d52.tar.gz
+      #   url: https://github.com/jlambert360/Ishiiruka.git
+      #   commit: 81e0a8f8a53f429b341d440ddb2d2b7802b66d52
       - type: git
-        # url: https://github.com/jlambert360/Ishiiruka/archive/81e0a8f8a53f429b341d440ddb2d2b7802b66d52.tar.gz
+        # url: https://github.com/jlambert360/Ishiiruka/archive/75a214de8f2620680be0df4868457121419aa613.tar.gz
         url: https://github.com/jlambert360/Ishiiruka.git
-        commit: 81e0a8f8a53f429b341d440ddb2d2b7802b66d52
+        commit: 75a214de8f2620680be0df4868457121419aa613
         # x-checker-data:
         #   type: json
         #   url: https://dolphin-emu.org/update/latest/beta
@@ -198,36 +184,36 @@ modules:
       # - type: patch
       #   path: nodirtyversion.patch
       # Patch hash for netplay
-      - type: shell
-        commands:
-          - |
-            echo "Patching tarball..."
-            FPPVERSION="2.29"
-            COMMITHASH="81e0a8f8a53f429b341d440ddb2d2b7802b66d52"
-            sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo ${COMMITHASH}|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-            sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSION|g" CMakeLists.txt # ensures compatibility w/ netplay
-            sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
-      # Patch DiscExtractor.h
-      - type: shell
-        commands:
-          - |
-            echo "Patching DiscExtractor.h"
-            sed -i "s|#include <optional>|#include <optional>\n#include <string>|g" Source/Core/DiscIO/DiscExtractor.h
-      # Patch wxWidgets3
-      - type: shell
-        commands:
-          - |
-              echo "Patching wxWidgets3"
-              sed -i "s| OR NOT X11_Xinerama_FOUND||g" Externals/wxWidgets3/CMakeLists.txt
-              sed -i "s|needs Xinerama and|needs|g" Externals/wxWidgets3/CMakeLists.txt
-              sed -i "s|\t\t\${X11_Xinerama_LIB}||g" Externals/wxWidgets3/CMakeLists.txt
-      # Move wx files into source
-      - type: shell
-        commands:
-          - |
-            echo "Moving wx files into source"
-            cp Externals/wxWidgets3/include/wx Source/Core/ -r
-            cp Externals/wxWidgets3/wx/* Source/Core/wx/
+      # - type: shell
+      #   commands:
+      #     - |
+      #       echo "Patching tarball..."
+      #       FPPVERSION="2.29"
+      #       COMMITHASH="81e0a8f8a53f429b341d440ddb2d2b7802b66d52"
+      #       sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo ${COMMITHASH}|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+      #       sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSION|g" CMakeLists.txt # ensures compatibility w/ netplay
+      #       sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+      # # Patch DiscExtractor.h
+      # - type: shell
+      #   commands:
+      #     - |
+      #       echo "Patching DiscExtractor.h"
+      #       sed -i "s|#include <optional>|#include <optional>\n#include <string>|g" Source/Core/DiscIO/DiscExtractor.h
+      # # Patch wxWidgets3
+      # - type: shell
+      #   commands:
+      #     - |
+      #         echo "Patching wxWidgets3"
+      #         sed -i "s| OR NOT X11_Xinerama_FOUND||g" Externals/wxWidgets3/CMakeLists.txt
+      #         sed -i "s|needs Xinerama and|needs|g" Externals/wxWidgets3/CMakeLists.txt
+      #         sed -i "s|\t\t\${X11_Xinerama_LIB}||g" Externals/wxWidgets3/CMakeLists.txt
+      # # Move wx files into source
+      # - type: shell
+      #   commands:
+      #     - |
+      #       echo "Moving wx files into source"
+      #       cp Externals/wxWidgets3/include/wx Source/Core/ -r
+      #       cp Externals/wxWidgets3/wx/* Source/Core/wx/
 
 
 
@@ -236,14 +222,14 @@ modules:
 
 
 
-      - type: file
-        path: org.DolphinEmu.ishiiruka.appdata.xml
-      - type: script
-        commands:
-          - |
-            for i in {0..9}; do
-              test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
-                ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
-            done
-            ishiiruka "$@"
-        dest-filename: ishiiruka
+      # - type: file
+      #   path: org.DolphinEmu.ishiiruka.appdata.xml
+      # - type: script
+      #   commands:
+      #     - |
+      #       for i in {0..9}; do
+      #         test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
+      #           ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
+      #       done
+      #       ishiiruka "$@"
+      #   dest-filename: ishiiruka
