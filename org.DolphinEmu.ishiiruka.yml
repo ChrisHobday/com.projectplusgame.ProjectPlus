@@ -2,6 +2,9 @@ app-id: org.DolphinEmu.ishiiruka
 runtime: org.freedesktop.Platform
 runtime-version: '23.08'
 sdk: org.freedesktop.Sdk
+# runtime: org.gnome.Platform
+# runtime-version: '45'
+# sdk: org.gnome.Sdk
 command: ishiiruka
 rename-desktop-file: ishiiruka.desktop
 rename-icon: ishiiruka
@@ -21,22 +24,10 @@ finish-args:
   - --talk-name=org.freedesktop.ScreenSaver
 modules:
 
-  # - name: pango-1.42
-  #   sources:
-  #   - type: archive
-  #     url: https://download.gnome.org/sources/pango/1.42/pango-1.42.4.tar.xz
-  #     sha256: 1d2b74cd63e8bd41961f2f8d952355aa0f9be6002b52c8aa7699d9f5da597c9d
-
   - name: gtk2
     cleanup:
     - "/bin"
-    - "/share/gtk-2.0"
-    - "/share/aclocal"
     - "/share/gtk-doc"
-    - "/lib/pkgconfig"
-    - "/lib/gtk-2.0/include"
-    - "/include"
-    - "*.la"
     x-cpe:
       product: gtk+
     config-opts:
@@ -45,51 +36,12 @@ modules:
     - "--disable-introspection"
     - "--with-xinput=xfree"
     sources:
-    - type: archive
-      url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz
-      sha256: b6c8a93ddda5eabe3bfee1eb39636c9a03d2a56c7b62828b359bf197943c582e
-
-  # - name: wxwidgets
-  #   rm-configure: true
-  #   config-opts:
-  #     # - --enable-shared
-  #     # - --enable-unicode
-  #     # - --enable-display
-  #     # - --enable-propgrid
-  #     # - --enable-stc
-  #     - --with-gtk=2
-  #     # - --with-opengl
-  #     # - --with-libjpeg
-  #     # - --with-libpng
-  #     # - --with-zlib
-  #     # - --disable-webkit
-  #     # - --disable-webview
-  #     # - --disable-ribbon
-  #   sources:
-  #     - type: archive
-  #       url: https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.2/wxWidgets-3.1.2.tar.bz2
-  #       sha256: 4cb8d23d70f9261debf7d6cfeca667fc0a7d2b6565adb8f1c484f9b674f1f27a
-  #     # Aegisub will crash if the ~/.aegisub directory does not exist
-  #     # ./include/wx/arrstr.h(201): assert "nIndex < m_nCount" failed in Item(): wxArrayString: index out of bounds
-  #     # Fix crash in translations code when no translations are found
-  #     # https://github.com/wxWidgets/wxWidgets/pull/1082
-  #     # https://github.com/wxWidgets/wxWidgets/commit/80904d1bc786ad2f6f8ab523391edfc82375820d
-  #     # - type: patch
-  #     #   path: wxwidgets-3.1-GetBestTranslation-notrans.patch
-  #     # - type: shell
-  #     #   commands:
-  #     #     - cp -p /usr/share/automake-*/config.{sub,guess} .;
-  #     #     - autoconf -f -B "build/autoconf_prepend-include";
-  #   post-install:
-  #    - install -p -D -m 0644  "docs/gpl.txt" "docs/lgpl.txt" "docs/licence.txt" -t "${FLATPAK_DEST}/share/licenses/wxwidgets/";
-  #   modules:
-  #     # - shared-modules/intltool/intltool-0.51.json
-  #     # - shared-modules/gtk2/gtk2.json
-  #     # - shared-modules/glu/glu-9.0.0.json
-  #   cleanup:
-  #     - /bin
-  #     - /lib/wx
-  #     - /share/bakefile
+    # - type: archive
+    #   url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz
+    #   sha256: b6c8a93ddda5eabe3bfee1eb39636c9a03d2a56c7b62828b359bf197943c582e
+      - type: archive
+        url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.33.tar.xz
+        sha256: ac2ac757f5942d318a311a54b0c80b5ef295f299c2a73c632f6bfb1ff49cc6da
 
   # needed for the bluetooth passthrough feature to work
   - name: libusb
@@ -126,24 +78,24 @@ modules:
           stable-only: true
           url-template: https://www.freedesktop.org/software/libevdev/libevdev-$version.tar.xz
 
-  # # needed for screensaver inhibition
-  # - name: xdg-screensaver-shim
-  #   buildsystem: meson
-  #   sources:
-  #     - type: archive
-  #       url: https://github.com/Unrud/xdg-screensaver-shim/archive/0.0.2.tar.gz
-  #       sha256: 0ed2a69fe6ee6cbffd2fe16f85116db737f17fb1e79bfb812d893cf15c728399
+  # needed for screensaver inhibition
+  - name: xdg-screensaver-shim
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/Unrud/xdg-screensaver-shim/archive/0.0.2.tar.gz
+        sha256: 0ed2a69fe6ee6cbffd2fe16f85116db737f17fb1e79bfb812d893cf15c728399
 
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
       # - --debug-output
-      - -DLINUX_LOCAL_DEV=true
-      # - -DGTK2_GLIBCONFIG_INCLUDE_DIR=${glib}/lib/glib-2.0/include
-      # - -DGTK2_GDKCONFIG_INCLUDE_DIR=${gtk2}/lib/gtk-2.0/include
-      # - -DGTK2_INCLUDE_DIRS=${gtk2}/lib/gtk-2.0
-      # - -DENABLE_LTO=True
+      # - -DLINUX_LOCAL_DEV=true
       # - -DCMAKE_INSTALL_PREFIX=/usr
+      # - -DGTK2_GLIBCONFIG_INCLUDE_DIR=${FLATPAK_DEST}/include/gtk-2.0
+      # - -DGTK2_GDKCONFIG_INCLUDE_DIR=${FLATPAK_DEST}/lib/gtk-2.0/include
+      # - -DGTK2_INCLUDE_DIRS=${FLATPAK_DEST}/include/gtk-2.0 ${FLATPAK_DEST}/lib/gtk-2.0/include
+      # - -DENABLE_LTO=True
       # - -DCMAKE_BUILD_TYPE=Release
       # - -DENABLE_ALSA=OFF
       # - -DENABLE_SDL=ON
@@ -158,78 +110,17 @@ modules:
       - desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka'
         /app/share/applications/ishiiruka.desktop
     sources:
-      # - type: git
-      #   # url: https://github.com/jlambert360/Ishiiruka/archive/81e0a8f8a53f429b341d440ddb2d2b7802b66d52.tar.gz
-      #   url: https://github.com/jlambert360/Ishiiruka.git
-      #   commit: 81e0a8f8a53f429b341d440ddb2d2b7802b66d52
       - type: git
-        # url: https://github.com/jlambert360/Ishiiruka/archive/75a214de8f2620680be0df4868457121419aa613.tar.gz
         url: https://github.com/jlambert360/Ishiiruka.git
         commit: 75a214de8f2620680be0df4868457121419aa613
-        # x-checker-data:
-        #   type: json
-        #   url: https://dolphin-emu.org/update/latest/beta
-        #   commit-query: .hash
-        #   version-query: .shortrev
-        #   timestamp-query: .date
-        #   is-main-source: true
-      # detects whether dolphin is running in a flatpak sandbox
-      # and makes it use xdg directories if it is.
-      # prevents dolphin from attempting to write conf files
-      # in non-writable paths, typically happens when a user
-      # has leftover files from a previous non-flatpak install
-      # - type: patch
-      #   path: detectflatpak.patch
-      # version strings must match exactly for online multiplayer
-      # - type: patch
-      #   path: nodirtyversion.patch
-      # Patch hash for netplay
-      # - type: shell
-      #   commands:
-      #     - |
-      #       echo "Patching tarball..."
-      #       FPPVERSION="2.29"
-      #       COMMITHASH="81e0a8f8a53f429b341d440ddb2d2b7802b66d52"
-      #       sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo ${COMMITHASH}|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-      #       sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSION|g" CMakeLists.txt # ensures compatibility w/ netplay
-      #       sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
-      # # Patch DiscExtractor.h
-      # - type: shell
-      #   commands:
-      #     - |
-      #       echo "Patching DiscExtractor.h"
-      #       sed -i "s|#include <optional>|#include <optional>\n#include <string>|g" Source/Core/DiscIO/DiscExtractor.h
-      # # Patch wxWidgets3
-      # - type: shell
-      #   commands:
-      #     - |
-      #         echo "Patching wxWidgets3"
-      #         sed -i "s| OR NOT X11_Xinerama_FOUND||g" Externals/wxWidgets3/CMakeLists.txt
-      #         sed -i "s|needs Xinerama and|needs|g" Externals/wxWidgets3/CMakeLists.txt
-      #         sed -i "s|\t\t\${X11_Xinerama_LIB}||g" Externals/wxWidgets3/CMakeLists.txt
-      # # Move wx files into source
-      # - type: shell
-      #   commands:
-      #     - |
-      #       echo "Moving wx files into source"
-      #       cp Externals/wxWidgets3/include/wx Source/Core/ -r
-      #       cp Externals/wxWidgets3/wx/* Source/Core/wx/
-
-
-
-
-
-
-
-
-      # - type: file
-      #   path: org.DolphinEmu.ishiiruka.appdata.xml
-      # - type: script
-      #   commands:
-      #     - |
-      #       for i in {0..9}; do
-      #         test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
-      #           ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
-      #       done
-      #       ishiiruka "$@"
-      #   dest-filename: ishiiruka
+      - type: file
+        path: org.DolphinEmu.ishiiruka.appdata.xml
+      - type: script
+        commands:
+          - |
+            for i in {0..9}; do
+              test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
+                ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
+            done
+            ishiiruka "$@"
+        dest-filename: ishiiruka
