@@ -26,15 +26,15 @@ modules:
 
   - name: gtk2
     cleanup:
-    - "/bin"
-    - "/share/gtk-doc"
+    - /bin
+    - /share/gtk-doc
     x-cpe:
       product: gtk+
     config-opts:
-    - "--disable-dependency-tracking"
-    - "--disable-gtk-doc-html"
-    - "--disable-introspection"
-    - "--with-xinput=xfree"
+    - --disable-dependency-tracking
+    - --disable-gtk-doc-html
+    - --disable-introspection
+    - --with-xinput=xfree
     sources:
     # - type: archive
     #   url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz
