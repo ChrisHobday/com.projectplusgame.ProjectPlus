@@ -35,6 +35,8 @@ modules:
     - --disable-gtk-doc-html
     - --disable-introspection
     - --with-xinput=xfree
+    post-install:
+      - cp ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h
     sources:
     # - type: archive
     #   url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz
@@ -93,8 +95,10 @@ modules:
       # - -DLINUX_LOCAL_DEV=true
       # - -DCMAKE_INSTALL_PREFIX=/usr
       # - -DGTK2_GLIBCONFIG_INCLUDE_DIR=${FLATPAK_DEST}/include/gtk-2.0
-      # - -DGTK2_GDKCONFIG_INCLUDE_DIR=${FLATPAK_DEST}/lib/gtk-2.0/include
+      # - -DGTK2_GLIBCONFIG_INCLUDE_DIR=${FLATPAK_DEST}/lib/gtk-2.0/include/
+      # - -DGTK2_GDKCONFIG_INCLUDE_DIR=${FLATPAK_DEST}/lib/gtk-2.0/include/
       # - -DGTK2_INCLUDE_DIRS=${FLATPAK_DEST}/include/gtk-2.0 ${FLATPAK_DEST}/lib/gtk-2.0/include
+      # - -DGTK2_INCLUDE_DIRS=${FLATPAK_DEST}/lib/gtk-2.0/include
       # - -DENABLE_LTO=True
       # - -DCMAKE_BUILD_TYPE=Release
       # - -DENABLE_ALSA=OFF
@@ -106,15 +110,22 @@ modules:
     post-install:
       - install -D -t ${FLATPAK_DEST}/bin/ ishiiruka
       - install -Dm644 -t ${FLATPAK_DEST}/share/appdata/ org.DolphinEmu.ishiiruka.appdata.xml
-      - sed -i -e 's/"2048"/"512"/g' /app/share/icons/hicolor/scalable/apps/ishiiruka.svg
-      - desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka'
-        /app/share/applications/ishiiruka.desktop
+      # - sed -i -e 's/"2048"/"512"/g' /app/share/icons/hicolor/scalable/apps/ishiiruka.svg
+      # - desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka'
+      #   /app/share/applications/ishiiruka.desktop
     sources:
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
         commit: 75a214de8f2620680be0df4868457121419aa613
       - type: file
         path: org.DolphinEmu.ishiiruka.appdata.xml
+      # Move wx files into source
+      - type: shell
+        commands:
+          - |
+            echo "Moving wx files into source"
+            cp Externals/wxWidgets3/include/wx Source/Core/ -r
+            cp Externals/wxWidgets3/wx/* Source/Core/wx/
       - type: script
         commands:
           - |
