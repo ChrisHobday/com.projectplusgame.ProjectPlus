@@ -6,7 +6,7 @@ sdk: org.freedesktop.Sdk
 # runtime-version: '45'
 # sdk: org.gnome.Sdk
 command: ishiiruka
-rename-desktop-file: ishiiruka.desktop
+rename-desktop-file: faster-project-plus.desktop
 rename-icon: ishiiruka
 finish-args:
   - --device=all
@@ -92,31 +92,33 @@ modules:
     buildsystem: cmake
     config-opts:
       # - --debug-output
-      # - -DLINUX_LOCAL_DEV=true
+      - -DLINUX_LOCAL_DEV=true
       # - -DCMAKE_INSTALL_PREFIX=/usr
       # - -DGTK2_GLIBCONFIG_INCLUDE_DIR=${FLATPAK_DEST}/include/gtk-2.0
       # - -DGTK2_GLIBCONFIG_INCLUDE_DIR=${FLATPAK_DEST}/lib/gtk-2.0/include/
       # - -DGTK2_GDKCONFIG_INCLUDE_DIR=${FLATPAK_DEST}/lib/gtk-2.0/include/
       # - -DGTK2_INCLUDE_DIRS=${FLATPAK_DEST}/include/gtk-2.0 ${FLATPAK_DEST}/lib/gtk-2.0/include
       # - -DGTK2_INCLUDE_DIRS=${FLATPAK_DEST}/lib/gtk-2.0/include
-      # - -DENABLE_LTO=True
-      # - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_LTO=True
+      - -DCMAKE_BUILD_TYPE=Release
       # - -DENABLE_ALSA=OFF
-      # - -DENABLE_SDL=ON
-      # - -DENABLE_EVDEV=ON
-      # - -DDISTRIBUTOR=Flathub
+      - -DENABLE_SDL=ON
+      - -DENABLE_EVDEV=ON
+      - -DDISTRIBUTOR=Flathub
     cleanup:
       # - /share/man
     post-install:
-      - install -D -t ${FLATPAK_DEST}/bin/ ishiiruka
-      - install -Dm644 -t ${FLATPAK_DEST}/share/appdata/ org.DolphinEmu.ishiiruka.appdata.xml
+      # - cp Binaries/ishiiruka ${FLATPAK_DEST}/bin/ishiiruka
+      # - mv ${FLATPAK_DEST}/share/applications/faster-project-plus.desktop ${FLATPAK_DEST}/share/applications/ishiiruka.desktop
+      # - install -D -t ${FLATPAK_DEST}/bin/ ishiiruka
+      # - install -Dm644 -t ${FLATPAK_DEST}/share/appdata/ org.DolphinEmu.ishiiruka.appdata.xml
       # - sed -i -e 's/"2048"/"512"/g' /app/share/icons/hicolor/scalable/apps/ishiiruka.svg
       # - desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka'
       #   /app/share/applications/ishiiruka.desktop
     sources:
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
-        commit: 75a214de8f2620680be0df4868457121419aa613
+        commit: 93dda1406c64461db051bed317e08a09d488b683
       - type: file
         path: org.DolphinEmu.ishiiruka.appdata.xml
       # Move wx files into source
@@ -126,12 +128,12 @@ modules:
             echo "Moving wx files into source"
             cp Externals/wxWidgets3/include/wx Source/Core/ -r
             cp Externals/wxWidgets3/wx/* Source/Core/wx/
-      - type: script
-        commands:
-          - |
-            for i in {0..9}; do
-              test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
-                ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
-            done
-            ishiiruka "$@"
-        dest-filename: ishiiruka
+      # - type: script
+      #   commands:
+      #     - |
+      #       for i in {0..9}; do
+      #         test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
+      #           ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
+      #       done
+      #       ishiiruka "$@"
+      #   dest-filename: ishiiruka
