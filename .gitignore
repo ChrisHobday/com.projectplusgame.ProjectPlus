@@ -1,2 +1,8 @@
 # Flatpak Builder
 *.flatpak-builder
+
+# Flatpak build-dir
+/build-dir
+
+# Flatpak repo
+/repo
