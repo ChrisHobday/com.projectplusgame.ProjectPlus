@@ -1,0 +1,111 @@
+app-id: org.ProjectPlus.dolphin-emu
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: ishiiruka
+rename-desktop-file: faster-project-plus.desktop
+rename-icon: ishiiruka
+finish-args:
+  - --device=all
+  # the file picker uses portals but the set
+  # game directory feature still needs this
+  - --filesystem=host:ro
+  - --socket=pulseaudio
+  - --env=QT_QPA_PLATFORM=xcb
+  - --socket=x11
+  - --share=network
+  - --share=ipc
+  # required for the emulated bluetooth adapter feature to work.
+  - --allow=bluetooth
+  - --filesystem=xdg-run/app/com.discordapp.Discord:create
+  - --talk-name=org.freedesktop.ScreenSaver
+modules:
+
+  - name: gtk2
+    cleanup:
+    - /bin
+    - /share/gtk-doc
+    x-cpe:
+      product: gtk+
+    config-opts:
+    - --disable-dependency-tracking
+    - --disable-gtk-doc-html
+    - --disable-introspection
+    - --with-xinput=xfree
+    post-install:
+      - cp ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.33.tar.xz
+        sha256: ac2ac757f5942d318a311a54b0c80b5ef295f299c2a73c632f6bfb1ff49cc6da
+
+  # needed for the bluetooth passthrough feature to work
+  - name: libusb
+    config-opts:
+      - --disable-static
+    cleanup:
+      - /include
+      - /lib/*.la
+      - /lib/pkgconfig
+    sources:
+      - type: archive
+        url: https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2
+        sha256: 12ce7a61fc9854d1d2a1ffe095f7b5fac19ddba095c259e6067a46500381b5a5
+        x-checker-data:
+          type: anitya
+          project-id: 1749
+          stable-only: true
+          url-template: https://github.com/libusb/libusb/releases/download/v$version/libusb-$version.tar.bz2
+
+  # enables motion controls on non-wii controllers (switch, ps4, etc)
+  # requires a udev rule enabling Motion Sensors access
+  - name: libevdev
+    buildsystem: meson
+    config-opts:
+      - -Dtests=disabled
+      - -Ddocumentation=disabled
+    sources:
+      - type: archive
+        url: https://www.freedesktop.org/software/libevdev/libevdev-1.13.1.tar.xz
+        sha256: 06a77bf2ac5c993305882bc1641017f5bec1592d6d1b64787bad492ab34f2f36
+        x-checker-data:
+          type: anitya
+          project-id: 20540
+          stable-only: true
+          url-template: https://www.freedesktop.org/software/libevdev/libevdev-$version.tar.xz
+
+  # needed for screensaver inhibition
+  - name: xdg-screensaver-shim
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/Unrud/xdg-screensaver-shim/archive/0.0.2.tar.gz
+        sha256: 0ed2a69fe6ee6cbffd2fe16f85116db737f17fb1e79bfb812d893cf15c728399
+
+  - name: ishiiruka
+    buildsystem: cmake
+    config-opts:
+      - -DLINUX_LOCAL_DEV=true
+      - -DENABLE_LTO=True
+      - -DCMAKE_BUILD_TYPE=Release
+      # - -DENABLE_ALSA=OFF
+      - -DENABLE_SDL=ON
+      - -DENABLE_EVDEV=ON
+      - -DDISTRIBUTOR=Flathub
+    cleanup:
+      - /share/man
+    post-install:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/appdata/ org.ProjectPlus.dolphin-emu.appdata.xml
+    sources:
+      - type: git
+        url: https://github.com/jlambert360/Ishiiruka.git
+        commit: 93dda1406c64461db051bed317e08a09d488b683
+      - type: file
+        path: org.ProjectPlus.dolphin-emu.appdata.xml
+      # Move wx files into source
+      - type: shell
+        commands:
+          - |
+            echo "Moving wx files into source"
+            cp Externals/wxWidgets3/include/wx Source/Core/ -r
+            cp Externals/wxWidgets3/wx/* Source/Core/wx/
