@@ -20,24 +20,8 @@ finish-args:
   - --filesystem=xdg-run/app/com.discordapp.Discord:create
   - --talk-name=org.freedesktop.ScreenSaver
 modules:
-
+  - shared-modules/gtk2/gtk2.json
   - name: gtk2
-    cleanup:
-    - /bin
-    - /share/gtk-doc
-    x-cpe:
-      product: gtk+
-    config-opts:
-    - --disable-dependency-tracking
-    - --disable-gtk-doc-html
-    - --disable-introspection
-    - --with-xinput=xfree
-    post-install:
-      - cp ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h
-    sources:
-      - type: archive
-        url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.33.tar.xz
-        sha256: ac2ac757f5942d318a311a54b0c80b5ef295f299c2a73c632f6bfb1ff49cc6da
 
   # needed for the bluetooth passthrough feature to work
   - name: libusb
@@ -86,15 +70,14 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DLINUX_LOCAL_DEV=true
-      - -DENABLE_LTO=True
       - -DCMAKE_BUILD_TYPE=Release
-      # - -DENABLE_ALSA=OFF
       - -DENABLE_SDL=ON
       - -DENABLE_EVDEV=ON
       - -DDISTRIBUTOR=Flathub
     cleanup:
       - /share/man
     post-install:
+      # Install appdata file in Flatpak
       - install -Dm644 -t ${FLATPAK_DEST}/share/appdata/ org.ProjectPlus.dolphin-emu.appdata.xml
     sources:
       - type: git
@@ -109,3 +92,9 @@ modules:
             echo "Moving wx files into source"
             cp Externals/wxWidgets3/include/wx Source/Core/ -r
             cp Externals/wxWidgets3/wx/* Source/Core/wx/
+      # Copy gdkconfig.h from previously installed gtk2 above to an included directory otherwise making will complain about not being able to find either gdkconfig.h or gtk/gtk.h
+      - type: shell
+        commands:
+          - |
+            echo "Copying ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h to ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h"
+            cp ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h
