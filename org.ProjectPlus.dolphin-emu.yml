@@ -1,10 +1,7 @@
 app-id: org.ProjectPlus.dolphin-emu
-runtime: org.kde.Platform
-runtime-version: '6.6'
-sdk: org.kde.Sdk
-# runtime: org.freedesktop.Platform
-# runtime-version: '23.08'
-# sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
 command: ishiiruka
 rename-desktop-file: faster-project-plus.desktop
 rename-icon: ishiiruka
@@ -66,7 +63,7 @@ modules:
       - /share/man
     post-install:
       # Install appdata file in Flatpak
-      - install -Dm644 -t ${FLATPAK_DEST}/share/appdata/ org.ProjectPlus.dolphin-emu.appdata.xml
+      # - install -Dm644 -t ${FLATPAK_DEST}/share/appdata/ org.ProjectPlus.dolphin-emu.appdata.xml
 
       # Merge ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys
       # - |
@@ -89,8 +86,8 @@ modules:
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
         commit: 93dda1406c64461db051bed317e08a09d488b683
-      - type: file
-        path: org.ProjectPlus.dolphin-emu.appdata.xml
+      # - type: file
+      #   path: org.ProjectPlus.dolphin-emu.appdata.xml
       # Move wx files into source
       - type: shell
         commands:
@@ -104,3 +101,9 @@ modules:
           - |
             echo "Copying ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h to ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h"
             cp ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h
+      # Patch UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories
+      - type: shell
+        commands:
+          - echo "Patching Source/Core/UICommon/UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories"
+          - sed 's/if (!File::Exists(user_path))/if (File::Exists("\/.flatpak-info") || !File::Exists(user_path))/' Source/Core/UICommon/UICommon.cpp > Source/Core/UICommon/changed.txt
+          - mv Source/Core/UICommon/changed.txt Source/Core/UICommon/UICommon.cpp
