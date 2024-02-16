@@ -1,7 +1,10 @@
 app-id: org.ProjectPlus.dolphin-emu
-runtime: org.freedesktop.Platform
-runtime-version: '23.08'
-sdk: org.freedesktop.Sdk
+runtime: org.kde.Platform
+runtime-version: '6.6'
+sdk: org.kde.Sdk
+# runtime: org.freedesktop.Platform
+# runtime-version: '23.08'
+# sdk: org.freedesktop.Sdk
 command: ishiiruka
 rename-desktop-file: faster-project-plus.desktop
 rename-icon: ishiiruka
@@ -64,6 +67,24 @@ modules:
     post-install:
       # Install appdata file in Flatpak
       - install -Dm644 -t ${FLATPAK_DEST}/share/appdata/ org.ProjectPlus.dolphin-emu.appdata.xml
+
+      # Merge ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys
+      # - |
+      #   echo "Merging ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys"
+      #   cp -RT ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/Sys
+      # - rm -r ${FLATPAK_DEST}/share/ishiiruka/user
+
+      # Create ${FLATPAK_DEST}/bin/portable.txt next to ishiiruka binary and move ${FLATPAK_DEST}/share/ishiiruka/user next to binary at ${FLATPAK_DEST}/bin/User
+      # - |
+      #   echo "Creating ${FLATPAK_DEST}/bin/portable.txt"
+      #   touch ${FLATPAK_DEST}/bin/portable.txt
+      #   echo "Moving ${FLATPAK_DEST}/share/ishiiruka/user to ${FLATPAK_DEST}/bin/User"
+      #   mv ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/User
+
+      # Move ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys
+      # - |
+      #   echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
+      #   mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
     sources:
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
