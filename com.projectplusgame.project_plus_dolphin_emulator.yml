@@ -1,4 +1,4 @@
-app-id: org.ProjectPlus.dolphin-emu
+app-id: com.projectplusgame.project_plus_dolphin_emulator
 runtime: org.freedesktop.Platform
 runtime-version: '23.08'
 sdk: org.freedesktop.Sdk
@@ -54,7 +54,7 @@ modules:
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
-      - -DLINUX_LOCAL_DEV=true
+      - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin/Ishiiruka look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there, so we enable it
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_SDL=ON
       - -DENABLE_EVDEV=ON
@@ -63,7 +63,7 @@ modules:
       - /share/man
     post-install:
       # Install appdata file in Flatpak
-      # - install -Dm644 -t ${FLATPAK_DEST}/share/appdata/ org.ProjectPlus.dolphin-emu.appdata.xml
+      # - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
 
       # Merge ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys
       # - |
@@ -78,7 +78,7 @@ modules:
       #   echo "Moving ${FLATPAK_DEST}/share/ishiiruka/user to ${FLATPAK_DEST}/bin/User"
       #   mv ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/User
 
-      # Move ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys
+      # Move ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
       # - |
       #   echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
       #   mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
@@ -87,7 +87,7 @@ modules:
         url: https://github.com/jlambert360/Ishiiruka.git
         commit: 93dda1406c64461db051bed317e08a09d488b683
       # - type: file
-      #   path: org.ProjectPlus.dolphin-emu.appdata.xml
+      #   path: com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
       # Move wx files into source
       - type: shell
         commands:
@@ -101,9 +101,19 @@ modules:
           - |
             echo "Copying ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h to ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h"
             cp ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h
-      # Patch UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories
+      # Patch UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories and remove setting user_path to env_path (without removing the env_path check, the Flatpak check is never reached and user_path is set to env_path)
       - type: shell
         commands:
-          - echo "Patching Source/Core/UICommon/UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories"
-          - sed 's/if (!File::Exists(user_path))/if (File::Exists("\/.flatpak-info") || !File::Exists(user_path))/' Source/Core/UICommon/UICommon.cpp > Source/Core/UICommon/changed.txt
-          - mv Source/Core/UICommon/changed.txt Source/Core/UICommon/UICommon.cpp
+          - |
+            echo "Patching Source/Core/UICommon/UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories and remove setting user_path to env_path"
+            sed -i 's/if (!File::Exists(user_path))/if (File::Exists("\/.flatpak-info") || !File::Exists(user_path))/' Source/Core/UICommon/UICommon.cpp
+            sed -i '205,208d' Source/Core/UICommon/UICommon.cpp
+      # Add debugging cout to UICommon.cpp to see the user_path that is being set
+      - type: shell
+        commands:
+          - |
+            echo "Adding debugging cout to Source/Core/UICommon/UICommon.cpp to see the user_path that is being set"
+            sed -i '229i \\t\tstd::cout << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_^EXE PATH: " << exe_path << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_" << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_ENV PATH: " << env_path << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_" << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_USER PATH: " << user_path << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_" << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_/.flatpak-info Exists?: " << File::Exists("/.flatpak-info") << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_" << std::endl;' Source/Core/UICommon/UICommon.cpp
