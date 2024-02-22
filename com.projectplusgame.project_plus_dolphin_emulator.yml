@@ -62,7 +62,7 @@ modules:
     cleanup:
       - /share/man
     post-install:
-      # Install appdata file in Flatpak
+      # Install metainfo file in Flatpak
       # - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
 
       # Merge ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys
@@ -83,11 +83,17 @@ modules:
       #   echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
       #   mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
     sources:
+      # Project Plus Ishiiruka/Dolphin emulator fork
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
         commit: 93dda1406c64461db051bed317e08a09d488b683
+      # Metadata file for Flatpak repos
       # - type: file
       #   path: com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
+      # Project Plus SD card
+      - type: archive
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.1/sd.tar.gz
+        md5: 6253c31ac15be96a80516ba9dcb09df8 # This is the md5 of the tar.gz file not the uncompressed
       # Move wx files into source
       - type: shell
         commands:
