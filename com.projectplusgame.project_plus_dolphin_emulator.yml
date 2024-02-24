@@ -65,6 +65,9 @@ modules:
       # Install metainfo file in Flatpak
       # - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
 
+      # Move SD Card to expected directory
+      # mv ${FLATPAK_DEST}/sd.raw ${FLATPAK_DEST}/wii/sd.raw
+
       # Merge ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys
       # - |
       #   echo "Merging ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys"
