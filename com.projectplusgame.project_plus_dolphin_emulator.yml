@@ -89,7 +89,7 @@ modules:
       # Project Plus Ishiiruka/Dolphin emulator fork
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
-        commit: 93dda1406c64461db051bed317e08a09d488b683
+        commit: eec8c7fdfc62efd1555a9bc671cb48533fed439c
       # Metadata file for Flatpak repos
       # - type: file
       #   path: com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
