@@ -54,7 +54,7 @@ modules:
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
-      - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin/Ishiiruka look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there, so we enable it
+      # - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin/Ishiiruka look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there, so we enable it
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_SDL=ON
       - -DENABLE_EVDEV=ON
@@ -82,9 +82,9 @@ modules:
       #   mv ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/User
 
       # Move ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
-      # - |
-      #   echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
-      #   mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
+      - |
+        echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
+        mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
     sources:
       # Project Plus Ishiiruka/Dolphin emulator fork
       - type: git
