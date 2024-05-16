@@ -54,7 +54,7 @@ modules:
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
-      # - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin/Ishiiruka look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there, so we enable it
+      # - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin/Ishiiruka look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there by default
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_SDL=ON
       - -DENABLE_EVDEV=ON
@@ -64,9 +64,6 @@ modules:
     post-install:
       # Install metainfo file in Flatpak
       # - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
-
-      # Move SD Card to expected directory
-      # mv ${FLATPAK_DEST}/sd.raw ${FLATPAK_DEST}/wii/sd.raw
 
       # Merge ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys
       # - |
@@ -85,6 +82,13 @@ modules:
       - |
         echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
         mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
+
+      # Extract and move sd.tar.gz to ${FLATPAK_DEST}/share/ishiiruka/user/Wii
+      - tar -xf sd.tar.gz -C ${FLATPAK_DEST}/share/ishiiruka/user/Wii
+      # - mv sd.raw ${FLATPAK_DEST}/share/ishiiruka/user/Wii
+
+      # Move Launcher directory with .dol files and icon to ${FLATPAK_DEST}/share/ishiiruka/user
+      - mv Launcher ${FLATPAK_DEST}/share/ishiiruka/user
     sources:
       # Project Plus Ishiiruka/Dolphin emulator fork
       - type: git
@@ -94,9 +98,15 @@ modules:
       # - type: file
       #   path: com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
       # Project Plus SD card
+      - type: file
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.2/sd.tar.gz
+        sha256: 121d08f8fcbf2fc24d5b48481f387398f24be30de3eb66fb510cb9f5a67f4657 # This is the hash of the tar.gz file not the uncompressed
+        # dest: sd.tar.gz
+      # Project Plus .dol files and icon
       - type: archive
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.1/sd.tar.gz
-        md5: 6253c31ac15be96a80516ba9dcb09df8 # This is the md5 of the tar.gz file not the uncompressed
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.2/Launcher.tar.gz
+        sha256: 1b9dce2fb0eac3ad8cc809826b3b6bfd4ce30dbfc394eaa586e35dcd356fd189 # This is the hash of the tar.gz file not the uncompressed
+        dest: Launcher
       # Move wx files into source
       - type: shell
         commands:
