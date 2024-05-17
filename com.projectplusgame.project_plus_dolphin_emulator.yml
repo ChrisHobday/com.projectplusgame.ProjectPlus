@@ -54,7 +54,7 @@ modules:
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
-      # - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin/Ishiiruka look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there by default
+      - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin/Ishiiruka look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there by default
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_SDL=ON
       - -DENABLE_EVDEV=ON
@@ -79,16 +79,15 @@ modules:
       #   mv ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/User
 
       # Move ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
-      - |
-        echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
-        mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
+      # - |
+      #   echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
+      #   mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
 
       # Extract and move sd.tar.gz to ${FLATPAK_DEST}/share/ishiiruka/user/Wii
-      - tar -xf sd.tar.gz -C ${FLATPAK_DEST}/share/ishiiruka/user/Wii
-      # - mv sd.raw ${FLATPAK_DEST}/share/ishiiruka/user/Wii
+      - tar -xf sd.tar.gz -C ${FLATPAK_DEST}/bin/Sys/Wii
 
       # Move Launcher directory with .dol files and icon to ${FLATPAK_DEST}/share/ishiiruka/user
-      - mv Launcher ${FLATPAK_DEST}/share/ishiiruka/user
+      - mv Launcher ${FLATPAK_DEST}/bin/Sys
     sources:
       # Project Plus Ishiiruka/Dolphin emulator fork
       - type: git
@@ -132,7 +131,7 @@ modules:
         commands:
           - |
             echo "Adding debugging cout to Source/Core/UICommon/UICommon.cpp to see the user_path that is being set"
-            sed -i '229i \\t\tstd::cout << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_^EXE PATH: " << exe_path << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_" << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_ENV PATH: " << env_path << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_" << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_USER PATH: " << user_path << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_" << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_/.flatpak-info Exists?: " << File::Exists("/.flatpak-info") << "+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_" << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "EXE PATH: " << exe_path << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "ENV PATH: " << env_path << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "USER PATH: " << user_path << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "_/.flatpak-info Exists?: " << File::Exists("/.flatpak-info") << std::endl;' Source/Core/UICommon/UICommon.cpp
