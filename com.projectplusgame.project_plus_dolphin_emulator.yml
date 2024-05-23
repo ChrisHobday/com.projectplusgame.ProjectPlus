@@ -19,6 +19,8 @@ finish-args:
   - --allow=bluetooth
   - --filesystem=xdg-run/app/com.discordapp.Discord:create
   - --talk-name=org.freedesktop.ScreenSaver
+  # required for Gamescope on Steam Deck
+  - --filesystem=xdg-run/gamescope-0:ro
 modules:
   - shared-modules/gtk2/gtk2.json
   - name: gtk2
@@ -61,33 +63,6 @@ modules:
       - -DDISTRIBUTOR=Flathub
     cleanup:
       - /share/man
-    post-install:
-      # Install metainfo file in Flatpak
-      # - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
-
-      # Merge ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys
-      # - |
-      #   echo "Merging ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys"
-      #   cp -RT ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/Sys
-      # - rm -r ${FLATPAK_DEST}/share/ishiiruka/user
-
-      # Create ${FLATPAK_DEST}/bin/portable.txt next to ishiiruka binary and move ${FLATPAK_DEST}/share/ishiiruka/user next to binary at ${FLATPAK_DEST}/bin/User
-      # - |
-      #   echo "Creating ${FLATPAK_DEST}/bin/portable.txt"
-      #   touch ${FLATPAK_DEST}/bin/portable.txt
-      #   echo "Moving ${FLATPAK_DEST}/share/ishiiruka/user to ${FLATPAK_DEST}/bin/User"
-      #   mv ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/User
-
-      # Move ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
-      # - |
-      #   echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
-      #   mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
-
-      # Extract and move sd.tar.gz to ${FLATPAK_DEST}/share/ishiiruka/user/Wii
-      - tar -xf sd.tar.gz -C ${FLATPAK_DEST}/bin/Sys/Wii
-
-      # Move Launcher directory with .dol files and icon to ${FLATPAK_DEST}/share/ishiiruka/user
-      - mv Launcher ${FLATPAK_DEST}/bin/Sys
     sources:
       # Project Plus Ishiiruka/Dolphin emulator fork
       - type: git
@@ -100,7 +75,6 @@ modules:
       - type: file
         url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.2/sd.tar.gz
         sha256: 121d08f8fcbf2fc24d5b48481f387398f24be30de3eb66fb510cb9f5a67f4657 # This is the hash of the tar.gz file not the uncompressed
-        # dest: sd.tar.gz
       # Project Plus .dol files and icon
       - type: archive
         url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.2/Launcher.tar.gz
@@ -135,3 +109,30 @@ modules:
             sed -i '229i \\t\tstd::cout << "ENV PATH: " << env_path << std::endl;' Source/Core/UICommon/UICommon.cpp
             sed -i '229i \\t\tstd::cout << "USER PATH: " << user_path << std::endl;' Source/Core/UICommon/UICommon.cpp
             sed -i '229i \\t\tstd::cout << "_/.flatpak-info Exists?: " << File::Exists("/.flatpak-info") << std::endl;' Source/Core/UICommon/UICommon.cpp
+    post-install:
+      # Install metainfo file in Flatpak
+      # - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
+
+      # Merge ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys
+      # - |
+      #   echo "Merging ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys"
+      #   cp -RT ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/Sys
+      # - rm -r ${FLATPAK_DEST}/share/ishiiruka/user
+
+      # Create ${FLATPAK_DEST}/bin/portable.txt next to ishiiruka binary and move ${FLATPAK_DEST}/share/ishiiruka/user next to binary at ${FLATPAK_DEST}/bin/User
+      # - |
+      #   echo "Creating ${FLATPAK_DEST}/bin/portable.txt"
+      #   touch ${FLATPAK_DEST}/bin/portable.txt
+      #   echo "Moving ${FLATPAK_DEST}/share/ishiiruka/user to ${FLATPAK_DEST}/bin/User"
+      #   mv ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/User
+
+      # Move ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
+      # - |
+      #   echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
+      #   mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
+
+      # Extract and move sd.tar.gz to ${FLATPAK_DEST}/share/ishiiruka/user/Wii
+      - tar -xf sd.tar.gz -C ${FLATPAK_DEST}/bin/Sys/Wii
+
+      # Move Launcher directory with .dol files and icon to ${FLATPAK_DEST}/share/ishiiruka/user
+      - mv Launcher ${FLATPAK_DEST}/bin/Sys
