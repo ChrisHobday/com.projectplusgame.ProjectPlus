@@ -1,0 +1,22 @@
+diff --git a/Source/Core/UICommon/UICommon.cpp b/Source/Core/UICommon/UICommon.cpp
+index 74dae9550..c4a7eef4b 100644
+--- a/Source/Core/UICommon/UICommon.cpp
++++ b/Source/Core/UICommon/UICommon.cpp
+@@ -191,7 +191,7 @@ void SetUserDirectory(const std::string& custom_path)
+     //    -> Use GetExeDirectory()/User
+     // 2. $DOLPHIN_EMU_USERPATH is set
+     //    -> Use $DOLPHIN_EMU_USERPATH
+-    // 3. ~/.dolphin-emu directory exists
++    // 3. ~/.dolphin-emu directory exists, and we're not in flatpak
+     //    -> Use ~/.dolphin-emu
+     // 4. Default
+     //    -> Use XDG basedir, see
+@@ -206,7 +206,7 @@ void SetUserDirectory(const std::string& custom_path)
+     {
+       user_path = env_path;
+     }
+-    else if (!File::Exists(user_path))
++    else if (File::Exists("/.flatpak-info") || !File::Exists(user_path))
+     {
+       const char* data_home = getenv("XDG_DATA_HOME");
+       std::string data_path =
