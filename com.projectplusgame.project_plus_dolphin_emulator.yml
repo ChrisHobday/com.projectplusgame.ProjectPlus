@@ -96,21 +96,29 @@ modules:
             echo "Copying ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h to ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h"
             cp ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h
       # Patch UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories and remove setting user_path to env_path (without removing the env_path check, the Flatpak check is never reached and user_path is set to env_path)
-      - type: shell
-        commands:
-          - |
-            echo "Patching Source/Core/UICommon/UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories and remove setting user_path to env_path"
-            sed -i 's/if (!File::Exists(user_path))/if (File::Exists("\/.flatpak-info") || !File::Exists(user_path))/' Source/Core/UICommon/UICommon.cpp
-            sed -i '205,208d' Source/Core/UICommon/UICommon.cpp
+      # - type: shell
+      #   commands:
+      #     - |
+      #       echo "Patching Source/Core/UICommon/UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories and remove setting user_path to env_path"
+      #       sed -i 's/if (!File::Exists(user_path))/if (File::Exists("\/.flatpak-info") || !File::Exists(user_path))/' Source/Core/UICommon/UICommon.cpp
+      #       sed -i '205,208d' Source/Core/UICommon/UICommon.cpp
       # Add debugging cout to UICommon.cpp to see the user_path that is being set
       - type: shell
         commands:
           - |
             echo "Adding debugging cout to Source/Core/UICommon/UICommon.cpp to see the user_path that is being set"
+            sed -i '229i \\t\tstd::cout << "----END DEBUG----" << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "XDG CACHE HOME: " << getenv("XDG_CACHE_HOME") << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "XDG CONFIG HOME: " << getenv("XDG_CONFIG_HOME") << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "XDG DATA HOME: " << getenv("XDG_DATA_HOME") << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "DIR SEP: " << DIR_SEP << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "DOLPHIN DATA DIR: " << DOLPHIN_DATA_DIR << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "HOME PATH: " << home_path << std::endl;' Source/Core/UICommon/UICommon.cpp
             sed -i '229i \\t\tstd::cout << "EXE PATH: " << exe_path << std::endl;' Source/Core/UICommon/UICommon.cpp
             sed -i '229i \\t\tstd::cout << "ENV PATH: " << env_path << std::endl;' Source/Core/UICommon/UICommon.cpp
             sed -i '229i \\t\tstd::cout << "USER PATH: " << user_path << std::endl;' Source/Core/UICommon/UICommon.cpp
             sed -i '229i \\t\tstd::cout << "_/.flatpak-info Exists?: " << File::Exists("/.flatpak-info") << std::endl;' Source/Core/UICommon/UICommon.cpp
+            sed -i '229i \\t\tstd::cout << "----START DEBUG----" << std::endl;' Source/Core/UICommon/UICommon.cpp
     post-install:
       # Install metainfo file in Flatpak
       # - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
