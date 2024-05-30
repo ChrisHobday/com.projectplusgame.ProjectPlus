@@ -1,22 +1,44 @@
 diff --git a/Source/Core/UICommon/UICommon.cpp b/Source/Core/UICommon/UICommon.cpp
-index 74dae9550..c4a7eef4b 100644
+index 74dae9550..633e98547 100644
 --- a/Source/Core/UICommon/UICommon.cpp
 +++ b/Source/Core/UICommon/UICommon.cpp
-@@ -191,7 +191,7 @@ void SetUserDirectory(const std::string& custom_path)
-     //    -> Use GetExeDirectory()/User
-     // 2. $DOLPHIN_EMU_USERPATH is set
-     //    -> Use $DOLPHIN_EMU_USERPATH
--    // 3. ~/.dolphin-emu directory exists
-+    // 3. ~/.dolphin-emu directory exists, and we're not in flatpak
-     //    -> Use ~/.dolphin-emu
-     // 4. Default
-     //    -> Use XDG basedir, see
-@@ -206,7 +206,7 @@ void SetUserDirectory(const std::string& custom_path)
+@@ -201,12 +201,16 @@ void SetUserDirectory(const std::string& custom_path)
+     if (File::Exists(exe_path + DIR_SEP "portable.txt"))
+     {
+       user_path = exe_path + DIR_SEP "User" DIR_SEP;
++      std::cout << "portable.txt exists, set user_path to exe_path + DIR_SEP 'User' DIR_SEP" << std::endl;
++      std::cout << "user_path = " << user_path << std::endl;
+     }
+     else if (env_path)
      {
        user_path = env_path;
++      std::cout << "env_path exists, set user_path env_path" << std::endl;
++      std::cout << "user_path = " << user_path << std::endl;
      }
 -    else if (!File::Exists(user_path))
 +    else if (File::Exists("/.flatpak-info") || !File::Exists(user_path))
      {
        const char* data_home = getenv("XDG_DATA_HOME");
        std::string data_path =
+@@ -228,12 +232,21 @@ void SetUserDirectory(const std::string& custom_path)
+       File::SetUserPath(D_USER_IDX, data_path);
+       File::SetUserPath(D_CONFIG_IDX, config_path);
+       File::SetUserPath(D_CACHE_IDX, cache_path);
++
++      std::cout << "File '.flatpak-info' exists (we are in a Flatpak) OR file at user_path does not exist" << std::endl;
++      std::cout << "data_path = " << data_path << std::endl;
++      std::cout << "config_path = " << config_path << std::endl;
++      std::cout << "cache_path = " << cache_path << std::endl;
++      std::cout << "user_path = " << user_path << std::endl;
++
+       return;
+     }
+ #endif
+   }
+ #endif
+   File::SetUserPath(D_USER_IDX, user_path);
++  std::cout << "What is this?" << std::endl;
++  std::cout << "user_path = " << user_path << std::endl;
+ }
+ 
+ void SaveWiimoteSources()
