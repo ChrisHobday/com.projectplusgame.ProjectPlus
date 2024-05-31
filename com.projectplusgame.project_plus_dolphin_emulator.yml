@@ -56,7 +56,7 @@ modules:
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
-      - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin/Ishiiruka look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there by default
+      # - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin/Ishiiruka look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there by default (if this is turned off make sure the Sys directory is being moved to ${FLATPAK_DEST}/share/ishiiruka/sys instead)
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_SDL=ON
       - -DENABLE_EVDEV=ON
@@ -70,18 +70,6 @@ modules:
         commit: eec8c7fdfc62efd1555a9bc671cb48533fed439c
       - type: patch
         path: detectflatpak.patch
-      # Metadata file for Flatpak repos
-      # - type: file
-      #   path: com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
-      # Project Plus SD card
-      - type: file
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.2/sd.tar.gz
-        sha256: 121d08f8fcbf2fc24d5b48481f387398f24be30de3eb66fb510cb9f5a67f4657 # This is the hash of the tar.gz file not the uncompressed
-      # Project Plus .dol files and icon
-      - type: archive
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.2/Launcher.tar.gz
-        sha256: 1b9dce2fb0eac3ad8cc809826b3b6bfd4ce30dbfc394eaa586e35dcd356fd189 # This is the hash of the tar.gz file not the uncompressed
-        dest: Launcher
       # Move wx files into source
       - type: shell
         commands:
@@ -95,54 +83,30 @@ modules:
           - |
             echo "Copying ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h to ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h"
             cp ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h
-      # Patch UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories and remove setting user_path to env_path (without removing the env_path check, the Flatpak check is never reached and user_path is set to env_path)
-      # - type: shell
-      #   commands:
-      #     - |
-      #       echo "Patching Source/Core/UICommon/UICommon.cpp to check if running in Flatpak and therefore set the proper user xdg directories and remove setting user_path to env_path"
-      #       sed -i 's/if (!File::Exists(user_path))/if (File::Exists("\/.flatpak-info") || !File::Exists(user_path))/' Source/Core/UICommon/UICommon.cpp
-      #       sed -i '205,208d' Source/Core/UICommon/UICommon.cpp
-      # Add debugging cout to UICommon.cpp to see the user_path that is being set
-      - type: shell
-        commands:
-          - |
-            echo "Adding debugging cout to Source/Core/UICommon/UICommon.cpp to see the user_path that is being set"
-            sed -i '229i \\t\tstd::cout << "----END DEBUG----" << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "XDG CACHE HOME: " << getenv("XDG_CACHE_HOME") << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "XDG CONFIG HOME: " << getenv("XDG_CONFIG_HOME") << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "XDG DATA HOME: " << getenv("XDG_DATA_HOME") << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "DIR SEP: " << DIR_SEP << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "DOLPHIN DATA DIR: " << DOLPHIN_DATA_DIR << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "HOME PATH: " << home_path << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "EXE PATH: " << exe_path << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "ENV PATH: " << env_path << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "USER PATH: " << user_path << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "_/.flatpak-info Exists?: " << File::Exists("/.flatpak-info") << std::endl;' Source/Core/UICommon/UICommon.cpp
-            sed -i '229i \\t\tstd::cout << "----START DEBUG----" << std::endl;' Source/Core/UICommon/UICommon.cpp
+      # Project Plus SD card
+      - type: file
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.2/sd.tar.gz
+        sha256: 121d08f8fcbf2fc24d5b48481f387398f24be30de3eb66fb510cb9f5a67f4657 # This is the hash of the tar.gz file not the uncompressed
+      # Project Plus .dol files and icon
+      - type: archive
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.2/Launcher.tar.gz
+        sha256: 1b9dce2fb0eac3ad8cc809826b3b6bfd4ce30dbfc394eaa586e35dcd356fd189 # This is the hash of the tar.gz file not the uncompressed
+        dest: Launcher
+      # Metadata file for Flatpak repos
+      - type: file
+        path: com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
+
     post-install:
       # Install metainfo file in Flatpak
-      # - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
-
-      # Merge ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys
-      # - |
-      #   echo "Merging ${FLATPAK_DEST}/share/ishiiruka/user into ${FLATPAK_DEST}/bin/Sys"
-      #   cp -RT ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/Sys
-      # - rm -r ${FLATPAK_DEST}/share/ishiiruka/user
-
-      # Create ${FLATPAK_DEST}/bin/portable.txt next to ishiiruka binary and move ${FLATPAK_DEST}/share/ishiiruka/user next to binary at ${FLATPAK_DEST}/bin/User
-      # - |
-      #   echo "Creating ${FLATPAK_DEST}/bin/portable.txt"
-      #   touch ${FLATPAK_DEST}/bin/portable.txt
-      #   echo "Moving ${FLATPAK_DEST}/share/ishiiruka/user to ${FLATPAK_DEST}/bin/User"
-      #   mv ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/bin/User
+      - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
 
       # Move ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
-      # - |
-      #   echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
-      #   mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
+      - |
+        echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
+        mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
 
       # Extract and move sd.tar.gz to ${FLATPAK_DEST}/share/ishiiruka/user/Wii
-      - tar -xf sd.tar.gz -C ${FLATPAK_DEST}/bin/Sys/Wii
+      - tar -xf sd.tar.gz -C ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
 
       # Move Launcher directory with .dol files and icon to ${FLATPAK_DEST}/share/ishiiruka/user
-      - mv Launcher ${FLATPAK_DEST}/bin/Sys
+      - mv Launcher ${FLATPAK_DEST}/share/ishiiruka/sys/Wii

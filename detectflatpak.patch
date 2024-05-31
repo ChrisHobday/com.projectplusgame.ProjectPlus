@@ -1,7 +1,16 @@
 diff --git a/Source/Core/UICommon/UICommon.cpp b/Source/Core/UICommon/UICommon.cpp
-index 74dae9550..633e98547 100644
+index 74dae9550..cc4669f7f 100644
 --- a/Source/Core/UICommon/UICommon.cpp
 +++ b/Source/Core/UICommon/UICommon.cpp
+@@ -191,7 +191,7 @@ void SetUserDirectory(const std::string& custom_path)
+     //    -> Use GetExeDirectory()/User
+     // 2. $DOLPHIN_EMU_USERPATH is set
+     //    -> Use $DOLPHIN_EMU_USERPATH
+-    // 3. ~/.dolphin-emu directory exists
++    // 3. ~/.dolphin-emu directory exists, and we're not in flatpak
+     //    -> Use ~/.dolphin-emu
+     // 4. Default
+     //    -> Use XDG basedir, see
 @@ -201,12 +201,16 @@ void SetUserDirectory(const std::string& custom_path)
      if (File::Exists(exe_path + DIR_SEP "portable.txt"))
      {
