@@ -52,7 +52,6 @@ modules:
       - type: archive
         url: https://github.com/Unrud/xdg-screensaver-shim/archive/0.0.2.tar.gz
         sha256: 0ed2a69fe6ee6cbffd2fe16f85116db737f17fb1e79bfb812d893cf15c728399
-
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
@@ -68,8 +67,7 @@ modules:
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
         commit: eec8c7fdfc62efd1555a9bc671cb48533fed439c
-      - type: patch
-        path: detectflatpak.patch
+
       # Move wx files into source
       - type: shell
         commands:
@@ -77,21 +75,29 @@ modules:
             echo "Moving wx files into source"
             cp Externals/wxWidgets3/include/wx Source/Core/ -r
             cp Externals/wxWidgets3/wx/* Source/Core/wx/
+
       # Copy gdkconfig.h from previously installed gtk2 above to an included directory otherwise making will complain about not being able to find either gdkconfig.h or gtk/gtk.h
       - type: shell
         commands:
           - |
             echo "Copying ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h to ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h"
             cp ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h
+
+      # Patches Source/Core/UICommon/UICommon.cpp b/Source/Core/UICommon/UICommon.cpp to check if in a Flatpak sandbox and set data, config, and cache paths correctly
+      - type: patch
+        path: detectflatpak.patch
+
       # Project Plus SD card
       - type: file
         url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.2/sd.tar.gz
         sha256: 121d08f8fcbf2fc24d5b48481f387398f24be30de3eb66fb510cb9f5a67f4657 # This is the hash of the tar.gz file not the uncompressed
+
       # Project Plus .dol files and icon
       - type: archive
         url: https://github.com/jlambert360/FPM-AppImage/releases/download/v2.5.2/Launcher.tar.gz
         sha256: 1b9dce2fb0eac3ad8cc809826b3b6bfd4ce30dbfc394eaa586e35dcd356fd189 # This is the hash of the tar.gz file not the uncompressed
         dest: Launcher
+
       # Metadata file for Flatpak repos
       - type: file
         path: com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
