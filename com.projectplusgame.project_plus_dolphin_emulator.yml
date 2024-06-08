@@ -2,7 +2,7 @@ app-id: com.projectplusgame.project_plus_dolphin_emulator
 runtime: org.freedesktop.Platform
 runtime-version: '23.08'
 sdk: org.freedesktop.Sdk
-command: ishiiruka
+command: ishiiruka-wrapper
 rename-desktop-file: faster-project-plus.desktop
 rename-icon: ishiiruka
 finish-args:
@@ -102,7 +102,25 @@ modules:
       - type: file
         path: com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
 
+      - type: script
+        commands:
+          - |
+            for i in {0..9}; do
+              test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
+                ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
+            done
+            ishiiruka "$@"
+        dest-filename: ishiiruka-wrapper
+
     post-install:
+
+      # Install ishiiruka-wrapper script
+      - install -D -t ${FLATPAK_DEST}/bin/ ishiiruka-wrapper
+
+      # Change exec of desktop file
+      - desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka-wrapper'
+        /app/share/applications/faster-project-plus.desktop
+
       # Install metainfo file in Flatpak
       - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
 
@@ -111,8 +129,16 @@ modules:
         echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
         mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
 
-      # Extract and move sd.tar.gz to ${FLATPAK_DEST}/share/ishiiruka/user/Wii
+      # Move ${FLATPAK_DEST}/share/ishiiruka/user to ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
+      # - |
+      #   echo "Moving ${FLATPAK_DEST}/share/ishiiruka/user to ${FLATPAK_DEST}/share/ishiiruka/sys/Wii"
+      #   mv ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
+      - |
+        echo "Moving ${FLATPAK_DEST}/share/ishiiruka/user/Config to ${FLATPAK_DEST}/share/ishiiruka/sys"
+        mv ${FLATPAK_DEST}/share/ishiiruka/user/Config ${FLATPAK_DEST}/share/ishiiruka/sys/
+
+      # Extract and move sd.tar.gz to ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
       - tar -xf sd.tar.gz -C ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
 
-      # Move Launcher directory with .dol files and icon to ${FLATPAK_DEST}/share/ishiiruka/user
+      # Move Launcher directory with .dol files and icon to ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
       - mv Launcher ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
