@@ -1,4 +1,5 @@
 # Project Plus Dolphin Flatpak
+## Check out releases for instructions to install/setup the Flatpak
 ## Steps for building the Flatpak
 1) Install the following packages (With whatever package manager you use, dnf is used here)
 ```console
@@ -16,14 +17,10 @@ or Download ZIP with the green button and extract it
 
 4) Build the Flatpak with flatpak-builder (Run this from within the com.projectplusgame.project_plus_dolphin_emulator directory. This will use the yml manifest to make the Flatpak in the created build-dir.)
 ```console
-flatpak-builder --force-clean build-dir com.projectplusgame.project_plus_dolphin_emulator.yml
-```
-or (If you want the Flatpak to be exported to a repo directory as well.)
-```console
 flatpak-builder --repo=repo --force-clean build-dir com.projectplusgame.project_plus_dolphin_emulator.yml
 ```
 
-## Steps for Installing/Running the built Flatpak
+## Steps for installing while building the Flatpak
 1) Install the built Flatpak (This will install the Flatpak on your system for the current user.)
 ```console
 flatpak-builder --user --install --force-clean build-dir com.projectplusgame.project_plus_dolphin_emulator.yml
@@ -35,6 +32,12 @@ flatpak list | grep "project"
 3) Run the installed Flatpak
 ```console
 flatpak run com.projectplusgame.project_plus_dolphin_emulator
+```
+
+## Steps for creating a single use Flatpak bundle like in the releases (After having built already)
+1) Build the Flatpak bundle (Run this from within the com.projectplusgame.project_plus_dolphin_emulator directory. This will use the repo to make the Flatpak bundle FasterPPlus.flatpak)
+```console
+flatpak build-bundle repo FasterPPlus.flatpak com.projectplusgame.project_plus_dolphin_emulator
 ```
 
 ## Steps for Uninstalling/Removing the Flatpak
