@@ -6,3 +6,6 @@
 
 # Flatpak repo
 /repo
+
+# Flatpak bundle
+/FasterPPlus.flatpak
