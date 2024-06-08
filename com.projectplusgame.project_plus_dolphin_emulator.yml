@@ -52,6 +52,7 @@ modules:
       - type: archive
         url: https://github.com/Unrud/xdg-screensaver-shim/archive/0.0.2.tar.gz
         sha256: 0ed2a69fe6ee6cbffd2fe16f85116db737f17fb1e79bfb812d893cf15c728399
+        
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
@@ -83,9 +84,13 @@ modules:
             echo "Copying ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h to ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h"
             cp ${FLATPAK_DEST}/lib/gtk-2.0/include/gdkconfig.h ${FLATPAK_DEST}/include/gtk-2.0/gdkconfig.h
 
-      # Patches Source/Core/UICommon/UICommon.cpp b/Source/Core/UICommon/UICommon.cpp to check if in a Flatpak sandbox and set data, config, and cache paths correctly
+      # Patches Source/Core/UICommon/UICommon.cpp to check if in a Flatpak sandbox and set data, config, and cache paths correctly
       - type: patch
         path: detectflatpak.patch
+
+      # Patches Data/User/Config/Dolphin.ini to set proper paths, graphics backend and audio backend
+      - type: patch
+        path: dolphinini.patch
 
       # Project Plus SD card
       - type: file
@@ -105,40 +110,57 @@ modules:
       - type: script
         commands:
           - |
+            echo "Setting up Discord rich presence"
             for i in {0..9}; do
               test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
                 ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
             done
+
+            echo "Make directories /var/data/FasterPPlus/Wii (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/data/FasterPPlus/Wii) if it doesn't exist"
+            mkdir -p /var/data/FasterPPlus/Wii
+
+            echo "Make directories /var/config/FasterPPlus/ (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/config/FasterPPlus) if it doesn't exist"
+            mkdir -p /var/config/FasterPPlus
+
+            echo "Copy sd.raw to user data directory (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/data/FasterPPlus/Wii/sd.raw) if it doesn't already exist"
+            cp -n "`dirname $0`"/../share/ishiiruka/sys/Wii/sd.raw /var/data/FasterPPlus/Wii/sd.raw
+
+            echo "Copy Launcher directory to user data directory (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/data/FasterPPlus/Wii) if it doesn't already exist"
+            cp -nr "`dirname $0`"/../share/ishiiruka/sys/Wii/Launcher /var/data/FasterPPlus/Wii
+
+            echo "Copy user Dolphin.ini to user config directory (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/config/FasterPPlus/Dolphin.ini) if it doesn't already exist"
+            cp -n "`dirname $0`"/../share/ishiiruka/user/Config/Dolphin.ini /var/config/FasterPPlus/Dolphin.ini
+
             ishiiruka "$@"
         dest-filename: ishiiruka-wrapper
 
     post-install:
-
       # Install ishiiruka-wrapper script
-      - install -D -t ${FLATPAK_DEST}/bin/ ishiiruka-wrapper
+      - |
+        echo "Installing ishiiruka-wrapper in ${FLATPAK_DEST}/bin/"
+        install -D -t ${FLATPAK_DEST}/bin/ ishiiruka-wrapper
 
-      # Change exec of desktop file
-      - desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka-wrapper'
-        /app/share/applications/faster-project-plus.desktop
+      # Change exec of desktop file to launch ishiiruka-wrapper instead of ishiiruka
+      - |
+        echo "Changing exec of /app/share/applications/faster-project-plus.desktop file to launch ishiiruka-wrapper instead of ishiiruka"
+        desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka-wrapper' /app/share/applications/faster-project-plus.desktop
 
       # Install metainfo file in Flatpak
-      - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
+      - |
+        echo "Installing com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml in ${FLATPAK_DEST}/share/metainfo/"
+        install -Dm644 -t ${FLATPAK_DEST}/share/metainfo/ com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
 
       # Move ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
       - |
         echo "Moving ${FLATPAK_DEST}/bin/Sys to ${FLATPAK_DEST}/share/ishiiruka/sys"
         mv ${FLATPAK_DEST}/bin/Sys ${FLATPAK_DEST}/share/ishiiruka/sys
 
-      # Move ${FLATPAK_DEST}/share/ishiiruka/user to ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
-      # - |
-      #   echo "Moving ${FLATPAK_DEST}/share/ishiiruka/user to ${FLATPAK_DEST}/share/ishiiruka/sys/Wii"
-      #   mv ${FLATPAK_DEST}/share/ishiiruka/user ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
-      - |
-        echo "Moving ${FLATPAK_DEST}/share/ishiiruka/user/Config to ${FLATPAK_DEST}/share/ishiiruka/sys"
-        mv ${FLATPAK_DEST}/share/ishiiruka/user/Config ${FLATPAK_DEST}/share/ishiiruka/sys/
-
       # Extract and move sd.tar.gz to ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
-      - tar -xf sd.tar.gz -C ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
+      - |
+        echo "Extracting and moving sd.tar.gz to ${FLATPAK_DEST}/share/ishiiruka/sys/Wii"
+        tar -xf sd.tar.gz -C ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
 
       # Move Launcher directory with .dol files and icon to ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
-      - mv Launcher ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
+      - |
+        echo "Moving Launcher directory to ${FLATPAK_DEST}/share/ishiiruka/sys/Wii"
+        mv Launcher ${FLATPAK_DEST}/share/ishiiruka/sys/Wii
