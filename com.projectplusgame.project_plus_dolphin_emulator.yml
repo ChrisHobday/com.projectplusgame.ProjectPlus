@@ -110,12 +110,15 @@ modules:
       - type: script
         commands:
           - |
+            # This is the script that is launched when the Flatpak is started
+            # Setup Discord rich presence
             echo "Setting up Discord rich presence"
             for i in {0..9}; do
               test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
                 ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
             done
 
+            # This is a bit of a hacky way to get the sd.raw, Launcher directory, and custom Dolphin.ini into the Flatpak var directory, because the installation directory for Flatpaks is not writable and so we cannot use portable.txt + the User directory beside the binary
             echo "Make directories /var/data/FasterPPlus/Wii (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/data/FasterPPlus/Wii) if it doesn't exist"
             mkdir -p /var/data/FasterPPlus/Wii
 
@@ -131,6 +134,7 @@ modules:
             echo "Copy user Dolphin.ini to user config directory (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/config/FasterPPlus/Dolphin.ini) if it doesn't already exist"
             cp -n "`dirname $0`"/../share/ishiiruka/user/Config/Dolphin.ini /var/config/FasterPPlus/Dolphin.ini
 
+            # Launch ishiiruka binary
             ishiiruka "$@"
         dest-filename: ishiiruka-wrapper
 
