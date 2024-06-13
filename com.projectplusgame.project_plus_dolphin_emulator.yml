@@ -52,7 +52,8 @@ modules:
       - type: archive
         url: https://github.com/Unrud/xdg-screensaver-shim/archive/0.0.2.tar.gz
         sha256: 0ed2a69fe6ee6cbffd2fe16f85116db737f17fb1e79bfb812d893cf15c728399
-        
+
+  # The forked dolphin version Project Plus uses preloaded with the Project Plus sd.raw card and .dol Launcher files
   - name: ishiiruka
     buildsystem: cmake
     config-opts:
@@ -88,9 +89,13 @@ modules:
       - type: patch
         path: detectflatpak.patch
 
-      # Patches Data/User/Config/Dolphin.ini to set proper paths, graphics backend and audio backend
+      # Patches Data/User/Config/Dolphin.ini to set proper paths, graphics backend, audio backend and fullscreen
       - type: patch
         path: dolphinini.patch
+
+      # Patches Data/User/Config/GFX.ini to set FullAsyncShaderCompilation false (crashes on Linux), Tessellation false (not supported Linux) and internal resolution to scale with window size
+      - type: patch
+        path: gfxini.patch
 
       # Project Plus SD card
       - type: file
@@ -107,10 +112,10 @@ modules:
       - type: file
         path: com.projectplusgame.project_plus_dolphin_emulator.metainfo.xml
 
+      # The script that is run when the Flatpak is started everytime
       - type: script
         commands:
           - |
-            # This is the script that is launched when the Flatpak is started
             # Setup Discord rich presence
             echo "Setting up Discord rich presence"
             for i in {0..9}; do
@@ -118,7 +123,7 @@ modules:
                 ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
             done
 
-            # This is a bit of a hacky way to get the sd.raw, Launcher directory, and custom Dolphin.ini into the Flatpak var directory, because the installation directory for Flatpaks is not writable and so we cannot use portable.txt + the User directory beside the binary
+            # This is a bit of a hacky way to get the sd.raw, Launcher directory, and patched Dolphin.ini/GFX.ini into the Flatpak user var directory, because the installation directory for Flatpaks is not writable and so we cannot use portable.txt + the User directory beside the binary
             echo "Make directories /var/data/FasterPPlus/Wii (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/data/FasterPPlus/Wii) if it doesn't exist"
             mkdir -p /var/data/FasterPPlus/Wii
 
@@ -131,8 +136,9 @@ modules:
             echo "Copy Launcher directory to user data directory (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/data/FasterPPlus/Wii) if it doesn't already exist"
             cp -nr "`dirname $0`"/../share/ishiiruka/sys/Wii/Launcher /var/data/FasterPPlus/Wii
 
-            echo "Copy user Dolphin.ini to user config directory (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/config/FasterPPlus/Dolphin.ini) if it doesn't already exist"
+            echo "Copy user config Dolphin.ini and GFX.ini to user config directory (~/.var/app/com.projectplusgame.project_plus_dolphin_emulator/config/FasterPPlus/) if they don't already exist"
             cp -n "`dirname $0`"/../share/ishiiruka/user/Config/Dolphin.ini /var/config/FasterPPlus/Dolphin.ini
+            cp -n "`dirname $0`"/../share/ishiiruka/user/Config/GFX.ini /var/config/FasterPPlus/GFX.ini
 
             # Launch ishiiruka binary
             ishiiruka "$@"
