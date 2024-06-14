@@ -89,11 +89,11 @@ modules:
       - type: patch
         path: detectflatpak.patch
 
-      # Patches Data/User/Config/Dolphin.ini to set proper paths, graphics backend, audio backend and fullscreen
+      # Patches Data/User/Config/Dolphin.ini to set proper paths, graphics backend, and audio backend
       - type: patch
         path: dolphinini.patch
 
-      # Patches Data/User/Config/GFX.ini to set FullAsyncShaderCompilation false (crashes on Linux), Tessellation false (not supported Linux) and internal resolution to scale with window size
+      # Patches Data/User/Config/GFX.ini to set FullAsyncShaderCompilation false (crashes on Linux), and Tessellation false (not supported Linux)
       - type: patch
         path: gfxini.patch
 
