@@ -45,7 +45,7 @@ flatpak run org.flatpak.Builder --force-clean --repo=repo --user --install build
 ## Building single use Flatpak bundle like in the releases (After having followed the Building steps above)
 - Build the Flatpak bundle (Run this from within the com.projectplusgame.ProjectPlus directory after having followed the Building steps above)
 ```console
-flatpak build-bundle repo FasterPPlus.flatpak com.projectplusgame.ProjectPlus
+flatpak build-bundle repo ProjectPlus2.5.2.flatpak com.projectplusgame.ProjectPlus
 ```
 ## Troubleshooting
 - Check if Flatpak is installed
