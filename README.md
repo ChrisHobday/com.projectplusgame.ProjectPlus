@@ -1,51 +1,58 @@
-# Project Plus Dolphin Flatpak
-## Check out releases for instructions to install/setup the Flatpak
-## Steps for building the Flatpak
-1) Install the following packages (With whatever package manager you use, dnf is used here)
+# Project Plus Flatpak
+## Installing
+- Download ProjectPlus2.5.2.flatpak from releases
+- Install ProjectPlus2.5.2.flatpak (sudo needed for installing single use Flatpak bundle)
 ```console
-dnf install flatpak flatpak-builder
+sudo flatpak install ProjectPlus2.5.2.flatpak
 ```
-2) Install the platform this Flatpak will be using
+## Launching
+- Launch the ProjectPlus Flatpak (Either search for the app in your menu and click it) or
+```console
+flatpak run com.projectplusgame.ProjectPlus
+```
+## Setup
+- Set the "Config>Paths>Default ISO:" to your Brawl.iso
+- Optionally change graphics options to use fullscreen and set internal resolution higher
+- Play "Project+ Offline Launcher.dol" for offline play or use Tools>Start NetPlay... to either connect or host an online game with the"Project+ Netplay Launcher.dol"
+## Uninstalling
+- Remove ProjectPlus Flatpak
+```console
+flatpak remove com.projectplusgame.ProjectPlus
+```
+## Downloading/Cloning this repo
+- Click the green button to download zip and extract once downloaded or clone repo with
+```console
+git clone --recurse-submodules https://github.com/ChrisHobday/com.projectplusgame.ProjectPlus
+```
+## Building
+- Install Flatpak builder
+```console
+flatpak install flathub org.flatpak.Builder
+```
+- Install the platform this Flatpak will be using
 ```console
 flatpak install flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
 ```
-3) Git clone this github (with it's submodules)
+- Build the Flatpak with flatpak-builder (Run this from within the com.projectplusgame.ProjectPlus directory)
 ```console
-git clone --recurse-submodules https://github.com/ChrisHobday/com.projectplusgame.project_plus_dolphin_emulator
+flatpak run org.flatpak.Builder --force-clean --repo=repo build-dir com.projectplusgame.ProjectPlus.yml
 ```
-or Download ZIP with the green button and extract it
-
-4) Build the Flatpak with flatpak-builder (Run this from within the com.projectplusgame.project_plus_dolphin_emulator directory. This will use the yml manifest to make the Flatpak in the created build-dir.)
+## User installation while building
+- Replace last Building step with
 ```console
-flatpak-builder --repo=repo --force-clean build-dir com.projectplusgame.project_plus_dolphin_emulator.yml
+flatpak run org.flatpak.Builder --force-clean --repo=repo --user --install build-dir com.projectplusgame.ProjectPlus.yml
 ```
-
-## Steps for installing while building the Flatpak
-1) Install the built Flatpak (This will install the Flatpak on your system for the current user.)
+## Building single use Flatpak bundle like in the releases (After having followed the Building steps above)
+- Build the Flatpak bundle (Run this from within the com.projectplusgame.ProjectPlus directory after having followed the Building steps above)
 ```console
-flatpak-builder --user --install --force-clean build-dir com.projectplusgame.project_plus_dolphin_emulator.yml
+flatpak build-bundle repo FasterPPlus.flatpak com.projectplusgame.ProjectPlus
 ```
-2) Check that the Flatpak is listed (It should show up as "project_plus_dolphin_emulator   com.projectplusgame.project_plus_dolphin_emulator".)
+## Troubleshooting
+- Check if Flatpak is installed
 ```console
-flatpak list | grep "project"
+flatpak list | grep ProjectPlus
 ```
-3) Run the installed Flatpak
+- Enter Flatpak in commandline mode
 ```console
-flatpak run com.projectplusgame.project_plus_dolphin_emulator
-```
-
-## Steps for creating a single use Flatpak bundle like in the releases (After having built already)
-1) Build the Flatpak bundle (Run this from within the com.projectplusgame.project_plus_dolphin_emulator directory. This will use the repo to make the Flatpak bundle FasterPPlus.flatpak)
-```console
-flatpak build-bundle repo FasterPPlus.flatpak com.projectplusgame.project_plus_dolphin_emulator
-```
-
-## Steps for Uninstalling/Removing the Flatpak
-1) Remove the installed Flatpak
-```console
-flatpak remove com.projectplusgame.project_plus_dolphin_emulator
-```
-2) Check that the Flatpak is NOT listed (It should no longer show up.)
-```console
-flatpak list | grep "project"
+flatpak run --command=sh com.projectplusgame.ProjectPlus
 ```
