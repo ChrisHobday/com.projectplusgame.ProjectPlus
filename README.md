@@ -13,7 +13,7 @@ flatpak run com.projectplusgame.ProjectPlus
 ## Setup
 - Set the "Config>Paths>Default ISO:" to your Brawl.iso
 - Optionally change graphics options to use fullscreen and set internal resolution higher
-- Play "Project+ Offline Launcher.dol" for offline play or use Tools>Start NetPlay... to either connect or host an online game with the"Project+ Netplay Launcher.dol"
+- Play "Project+ Offline Launcher.dol" for offline play or use "Tools>Start NetPlay..." to either connect or host an online game with the"Project+ Netplay Launcher.dol"
 ## Uninstalling
 - Remove ProjectPlus Flatpak
 ```console
@@ -52,7 +52,7 @@ flatpak build-bundle repo FasterPPlus.flatpak com.projectplusgame.ProjectPlus
 ```console
 flatpak list | grep ProjectPlus
 ```
-- Enter Flatpak in commandline mode
+- Enter Flatpak in command line mode
 ```console
 flatpak run --command=sh com.projectplusgame.ProjectPlus
 ```
