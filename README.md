@@ -56,3 +56,11 @@ flatpak list | grep ProjectPlus
 ```console
 flatpak run --command=sh com.projectplusgame.ProjectPlus
 ```
+## Flatpak locations
+- Installation directory             = /var/lib/flatpak/app/com.projectplusgame.ProjectPlus/
+- Installation directory (User mode) = ~/.local/share/flatpak/app/com.projectplusgame.ProjectPlus/
+- User cache directory               = ~/.var/app/com.projectplusgame.ProjectPlus/cache/
+- User config directory              = ~/.var/app/com.projectplusgame.ProjectPlus/config/
+- User data directory                = ~/.var/app/com.projectplusgame.ProjectPlus/data/
+- SD card                            = ~/.var/app/com.projectplusgame.ProjectPlus/data/FasterPPlus/Wii/sd.raw
+- Launcher directory                 = ~/.var/app/com.projectplusgame.ProjectPlus/data/FasterPPlus/Wii/Launcher/
