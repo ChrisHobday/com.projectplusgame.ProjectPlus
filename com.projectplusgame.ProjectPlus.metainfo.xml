@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.projectplusgame.project_plus_dolphin_emulator</id>
+  <id>com.projectplusgame.ProjectPlus</id>
   
-  <name>Project Plus Dolphin Emulator</name>
+  <name>Project Plus</name>
   <summary>GameCube / Wii / Triforce Emulator for Project Plus</summary>
   
   <metadata_license>CC-BY-SA-3.0</metadata_license>
@@ -19,6 +19,10 @@
       A fork of the Dolphin/Ishiiruka Wii/GameCube emulator for playing the Super Smash Bros Brawl mod Project Plus.
     </p>
   </description>
+
+  <releases>
+    <release version="2.5.2" date="2024-06-15"/>
+  </releases>
   
-  <launchable type="desktop-id">com.projectplusgame.project_plus_dolphin_emulator.desktop</launchable>
+  <launchable type="desktop-id">com.projectplusgame.ProjectPlus.desktop</launchable>
 </component>
