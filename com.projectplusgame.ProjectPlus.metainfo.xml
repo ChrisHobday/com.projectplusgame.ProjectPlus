@@ -20,6 +20,13 @@
     </p>
   </description>
 
+  <launchable type="desktop-id">com.projectplusgame.ProjectPlus.desktop</launchable>
+
+  <provides>
+    <binary>ishiiruka</binary>
+    <id>com.projectplusgame.ProjectPlus.desktop</id>
+  </provides>
+
   <releases>
     <release version="2.5.2" date="2024-06-15"/>
   </releases>
