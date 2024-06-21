@@ -168,9 +168,9 @@ modules:
         desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka-wrapper' /app/share/applications/faster-project-plus.desktop
 
       # Install metainfo file in Flatpak
-      - |
-        echo "Installing com.projectplusgame.ProjectPlus.metainfo.xml in /app/share/metainfo/"
-        install -Dm644 -t /app/share/metainfo/ com.projectplusgame.ProjectPlus.metainfo.xml
+      # - |
+      #   echo "Installing com.projectplusgame.ProjectPlus.metainfo.xml in /app/share/metainfo/"
+      #   install -Dm644 -t /app/share/metainfo/ com.projectplusgame.ProjectPlus.metainfo.xml
 
       # Move /app/bin/Sys to /app/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
       - |
