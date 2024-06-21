@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f854c706e..fd6abb0b3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -805,6 +805,8 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux|FreeBSD|OpenBSD")
+   # Install the application icon and menu item
+   install(FILES Data/ishiiruka.png
+           DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/48x48/apps)
++  install(FILES Data/ishiiruka.png
++          DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/256x256/apps)
+   install(FILES Data/faster-project-plus.desktop
+           DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications)
+   # Install manpages

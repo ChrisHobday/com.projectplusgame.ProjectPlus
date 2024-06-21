@@ -58,6 +58,7 @@ modules:
     buildsystem: cmake
     config-opts:
       # - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin/Ishiiruka look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there by default (if this is turned off make sure the Sys directory is being moved to /app/share/ishiiruka/sys instead)
+      - -DINSTALL_ICONS=ON
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_SDL=ON
       - -DENABLE_EVDEV=ON
@@ -96,6 +97,10 @@ modules:
       # Patches Data/User/Config/GFX.ini to set FullAsyncShaderCompilation false (crashes on Linux), and Tessellation false (not supported Linux)
       - type: patch
         path: gfxini.patch
+
+      # Patches CMakeLists.txt to install the icon as 256x256 as well (flatpak-builder will give error if only installed as default 48x48)
+      - type: patch
+        path: iconinstall.patch
 
       # Project Plus SD card
       - type: file
@@ -168,9 +173,9 @@ modules:
         desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka-wrapper' /app/share/applications/faster-project-plus.desktop
 
       # Install metainfo file in Flatpak
-      # - |
-      #   echo "Installing com.projectplusgame.ProjectPlus.metainfo.xml in /app/share/metainfo/"
-      #   install -Dm644 -t /app/share/metainfo/ com.projectplusgame.ProjectPlus.metainfo.xml
+      - |
+        echo "Installing com.projectplusgame.ProjectPlus.metainfo.xml in /app/share/metainfo/"
+        install -Dm644 -t /app/share/metainfo/ com.projectplusgame.ProjectPlus.metainfo.xml
 
       # Move /app/bin/Sys to /app/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
       - |
