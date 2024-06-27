@@ -104,12 +104,12 @@ modules:
 
       # Project Plus SD card
       - type: file
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.0.1/sd.tar.gz
-        sha256: cd3fb9014f77c5f44e6a439707a1f8234fdc5310a5de2f9d7fb2ac77dcead8b2 # This is the hash of the tar.gz file not the uncompressed
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.0.2/sd.tar.gz
+        sha256: f3774b46f1b2c52feca49549d2081e7aed6c1398ebcbc442155367b90257ee16 # This is the hash of the tar.gz file not the uncompressed
 
       # Project Plus .dol files and icon
       - type: archive
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.0.1/Launcher.tar.gz
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.0.2/Launcher.tar.gz
         sha256: 1b9dce2fb0eac3ad8cc809826b3b6bfd4ce30dbfc394eaa586e35dcd356fd189 # This is the hash of the tar.gz file not the uncompressed
         dest: Launcher
 
