@@ -69,7 +69,7 @@ modules:
       # Project Plus Ishiiruka/Dolphin emulator fork
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
-        commit: 9a42f894307ba9a122bdee23cb4a90ac90f04f60
+        commit: d65056573ebcaba9b3d72b199e1d45cb2593c107
 
       # Move wx files into source
       - type: shell
