@@ -60,6 +60,10 @@ flatpak list | grep ProjectPlus
 ```console
 flatpak run --command=sh com.projectplusgame.ProjectPlus
 ```
+- Fix white screen at startup
+```console
+rm -r ~/.var/app/com.projectplusgame.ProjectPlus/cache/
+```
 ## Flatpak locations
 - Installation directory             = /var/lib/flatpak/app/com.projectplusgame.ProjectPlus/
 - Installation directory (User mode) = ~/.local/share/flatpak/app/com.projectplusgame.ProjectPlus/
