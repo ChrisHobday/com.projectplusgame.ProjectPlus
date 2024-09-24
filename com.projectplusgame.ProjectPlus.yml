@@ -69,7 +69,7 @@ modules:
       # Project Plus Ishiiruka/Dolphin emulator fork
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
-        commit: d65056573ebcaba9b3d72b199e1d45cb2593c107
+        commit: 49ac69f750e0f1c6422da114d630a2532f290db2
 
       # Move wx files into source
       - type: shell
@@ -104,12 +104,12 @@ modules:
 
       # Project Plus SD card
       - type: file
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.0.2/sd.tar.gz
-        sha256: f3774b46f1b2c52feca49549d2081e7aed6c1398ebcbc442155367b90257ee16 # This is the hash of the tar.gz file not the uncompressed
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.0.5/sd.tar.gz
+        sha256: e8ef3df5a2f4cdc59dec3d5c08b3e26e5156ce51fcddb16ac8bd839f4ef54089 # This is the hash of the tar.gz file not the uncompressed
 
       # Project Plus .dol files and icon
       - type: archive
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.0.2/Launcher.tar.gz
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.0.5/Launcher.tar.gz
         sha256: 1b9dce2fb0eac3ad8cc809826b3b6bfd4ce30dbfc394eaa586e35dcd356fd189 # This is the hash of the tar.gz file not the uncompressed
         dest: Launcher
 

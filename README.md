@@ -1,9 +1,9 @@
 # Project Plus Flatpak
 ## Installing
-- Download ProjectPlus3.0.2.flatpak from releases
-- Install ProjectPlus3.0.2.flatpak (sudo needed for installing single use Flatpak bundle)
+- Download ProjectPlus3.0.5.flatpak from releases
+- Install ProjectPlus3.0.5.flatpak (sudo needed for installing single use Flatpak bundle)
 ```console
-sudo flatpak install ProjectPlus3.0.2.flatpak
+sudo flatpak install ProjectPlus3.0.5.flatpak
 ```
 ## Launching
 - Launch the ProjectPlus Flatpak (Either search for the app in your menu and click it) or
@@ -31,7 +31,7 @@ flatpak install flathub org.flatpak.Builder
 ```
 - Install the platform this Flatpak will be using
 ```console
-flatpak install flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
+flatpak install flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08
 ```
 - Build the Flatpak with flatpak-builder (Run this from within the com.projectplusgame.ProjectPlus directory)
 ```console
@@ -45,7 +45,7 @@ flatpak run org.flatpak.Builder --force-clean --repo=repo --user --install build
 ## Building single use Flatpak bundle like in the releases (After having followed the Building steps above)
 - Build the Flatpak bundle (Run this from within the com.projectplusgame.ProjectPlus directory after having followed the Building steps above)
 ```console
-flatpak build-bundle repo ProjectPlus3.0.2.flatpak com.projectplusgame.ProjectPlus
+flatpak build-bundle repo ProjectPlus3.0.5.flatpak com.projectplusgame.ProjectPlus
 ```
 ## Known issues
 - Using Vulkan backend results in black screen

@@ -20,6 +20,7 @@
     <id>com.projectplusgame.ProjectPlus.desktop</id>
   </provides>
   <releases>
+    <release version="3.0.5" date="2024-09-23"/>
     <release version="3.0.2" date="2024-06-27"/>
     <release version="3.0.1" date="2024-06-24"/>
     <release version="3.0" date="2024-06-24"/>
