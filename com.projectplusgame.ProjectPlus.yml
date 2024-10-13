@@ -7,20 +7,16 @@ rename-desktop-file: faster-project-plus.desktop
 rename-icon: ishiiruka
 finish-args:
   - --device=all
-  # the file picker uses portals but the set
-  # game directory feature still needs this
   - --filesystem=host:ro
   - --socket=pulseaudio
   - --env=QT_QPA_PLATFORM=xcb
   - --socket=x11
   - --share=network
   - --share=ipc
-  # required for the emulated bluetooth adapter feature to work.
-  - --allow=bluetooth
+  - --allow=bluetooth # Required for the emulated bluetooth adapter feature to work
   - --filesystem=xdg-run/app/com.discordapp.Discord:create
   - --talk-name=org.freedesktop.ScreenSaver
-  # required for Gamescope on Steam Deck
-  - --filesystem=xdg-run/gamescope-0:ro
+  - --filesystem=xdg-run/gamescope-0:ro # Required for Gamescope on Steam Deck
 modules:
   - shared-modules/gtk2/gtk2.json
   - name: gtk2
@@ -28,8 +24,8 @@ modules:
   - shared-modules/libusb/libusb.json
   - name: libusb
 
-  # enables motion controls on non-wii controllers (switch, ps4, etc)
-  # requires a udev rule enabling Motion Sensors access
+  # Enables motion controls on non-wii controllers (switch, ps4, etc)
+  # Requires a udev rule enabling Motion Sensors access
   - name: libevdev
     buildsystem: meson
     config-opts:
@@ -45,7 +41,7 @@ modules:
           stable-only: true
           url-template: https://www.freedesktop.org/software/libevdev/libevdev-$version.tar.xz
 
-  # needed for screensaver inhibition
+  # Needed for screensaver inhibition
   - name: xdg-screensaver-shim
     buildsystem: meson
     sources:
@@ -113,6 +109,12 @@ modules:
         sha256: 1b9dce2fb0eac3ad8cc809826b3b6bfd4ce30dbfc394eaa586e35dcd356fd189 # This is the hash of the tar.gz file not the uncompressed
         dest: Launcher
 
+      # Project Plus ModPack that contains HD textures
+      - type: archive
+        url: https://github.com/jlambert360/PPlusReleases/releases/download/v3.0.5/Project+.v3.0.5.Modders.Pack.zip
+        sha256: 04b8902dcddd5cdbf14e1eca7ba552158a1853f6e1cfe4f8daf72b48a1d4eb51 # This is the hash of the zip file not the uncompressed
+        dest: ModPack
+
       # Metadata file for Flatpak repos
       - type: file
         path: com.projectplusgame.ProjectPlus.metainfo.xml
@@ -121,6 +123,7 @@ modules:
       - type: script
         commands:
           - |
+            #!/bin/sh
             # Setup Discord rich presence
             echo "Setting up Discord rich presence"
             for i in {0..9}; do
@@ -143,9 +146,9 @@ modules:
             echo "Checking if there is a newer SD card version"
             if [ $SystemSDCardCreationDate -gt ${UserSDCardCreationDate:=0} ];
             then
-              # Move newer SD card to user data directory
-              echo "Moving newer SD card to user data directory"
-              mv /app/share/ishiiruka/sys/Wii/sd.raw /var/data/FasterPPlus/Wii/sd.raw
+              # Copy newer SD card to user data directory
+              echo "Copying newer SD card to user data directory"
+              cp /app/share/ishiiruka/sys/Wii/sd.raw /var/data/FasterPPlus/Wii/sd.raw
             else
               echo "SD card is already at latest version"
             fi
@@ -156,6 +159,24 @@ modules:
             echo "Copy user config /app/share/ishiiruka/user/Config/Dolphin.ini and GFX.ini (/var/lib/flatpak/app/com.projectplusgame.ProjectPlus/current/active/files/share/ishiiruka/user/Config/Dolphin.ini) to /var/config/FasterPPlus/Dolphin.ini and GFX.ini (~/.var/app/com.projectplusgame.ProjectPlus/config/FasterPPlus/Dolphin.ini and GFX.ini) if they don't already exist"
             cp -n /app/share/ishiiruka/user/Config/Dolphin.ini /var/config/FasterPPlus/Dolphin.ini
             cp -n /app/share/ishiiruka/user/Config/GFX.ini /var/config/FasterPPlus/GFX.ini
+
+            # Create and set variables for the system and user HD textures creation dates
+            SystemHDTexturesCreationDate=`stat --format="%W" /app/share/ishiiruka/user/Load/Textures/RSBE01`
+            UserHDTexturesCreationDate=`stat --format="%W" /var/data/FasterPPlus/Load/Textures/RSBE01`
+
+            # Check if the system HD textures creation date is newer than the user HD textures creation date (There has been an update), or there is no user HD textures
+            echo "Checking if there are newer HD textures"
+            if [ $SystemHDTexturesCreationDate -gt ${UserHDTexturesCreationDate:=0} ];
+            then
+              # Make /var/data/FasterPPlus/Load/Textures directory if it doesn't exist
+              echo "Make directory /var/data/FasterPPlus/Load/Textures (~/.var/app/com.projectplusgame.ProjectPlus/data/FasterPPlus/Load/Textures) if it doesn't exist"
+              mkdir -p /var/data/FasterPPlus/Load/Textures
+              # Copy newer HD textures to user data directory
+              echo "Copying newer HD textures to user data directory"
+              cp -r /app/share/ishiiruka/user/Load/Textures/RSBE01 /var/data/FasterPPlus/Load/Textures
+            else
+              echo "HD textures are already at latest version"
+            fi
 
             # Launch ishiiruka binary
             ishiiruka "$@"
@@ -191,3 +212,10 @@ modules:
       - |
         echo "Moving Launcher directory to /app/share/ishiiruka/sys/Wii"
         mv Launcher /app/share/ishiiruka/sys/Wii
+
+      # Create Textures directory, move and rename ModPack HD textures directory to /app/share/ishiiruka/user/Load/Textures/RSBE01
+      - |
+        echo "Creating /app/share/ishiiruka/user/Load/Textures"
+        mkdir /app/share/ishiiruka/user/Load/Textures
+        echo "Moving and renaming HD textures directory to /app/share/ishiiruka/user/Load/Textures/RSBE01"
+        mv 'ModPack/Full Quality HD Textures' /app/share/ishiiruka/user/Load/Textures/RSBE01
