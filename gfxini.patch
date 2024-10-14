@@ -1,8 +1,12 @@
 diff --git a/Data/User/Config/GFX.ini b/Data/User/Config/GFX.ini
-index f2699c36b..a6ca8f1b3 100644
+index f2699c36b..ae45b35b0 100644
 --- a/Data/User/Config/GFX.ini
 +++ b/Data/User/Config/GFX.ini
-@@ -24,11 +24,11 @@ WaitForCachedHiresTextures = False
+@@ -21,14 +21,15 @@ HiresTextures = False
+ InternalResolutionFrameDumps = False
+ UseFFV1 = False
+ WaitForCachedHiresTextures = False
++EnablePixelLighting = True
  [Hacks]
  EFBAccessEnable = False
  EFBScaledCopy = False

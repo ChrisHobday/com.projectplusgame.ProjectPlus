@@ -14,9 +14,9 @@ finish-args:
   - --share=network
   - --share=ipc
   - --allow=bluetooth # Required for the emulated bluetooth adapter feature to work
+  - --filesystem=xdg-run/gamescope-0:ro # Required for Gamescope on Steam Deck
   - --filesystem=xdg-run/app/com.discordapp.Discord:create
   - --talk-name=org.freedesktop.ScreenSaver
-  - --filesystem=xdg-run/gamescope-0:ro # Required for Gamescope on Steam Deck
 modules:
   - shared-modules/gtk2/gtk2.json
   - name: gtk2

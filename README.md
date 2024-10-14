@@ -14,6 +14,7 @@ flatpak run com.projectplusgame.ProjectPlus
 - Set the "Config>Paths>Default ISO:" to your Brawl.iso
 - Optionally change graphics options to use fullscreen and set internal resolution higher
 - Optionally check "Graphics>Advanced>Load Custom Textures" for HD textures
+- Optionally check "Graphics>Advanced>Wait For Prefetch" to reduce stuttering while using HD textures (Causes Dolphin to take longer to close tho)
 - Play "Project+ Offline Launcher.dol" for offline play or use "Tools>Start NetPlay..." to either connect or host an online game with the"Project+ Netplay Launcher.dol"
 ## Uninstalling
 - Remove ProjectPlus Flatpak
