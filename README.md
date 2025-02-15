@@ -49,10 +49,6 @@ flatpak run org.flatpak.Builder --force-clean --repo=repo --user --install build
 ```console
 flatpak build-bundle repo ProjectPlus3.0.5.flatpak com.projectplusgame.ProjectPlus
 ```
-## Known issues
-- Using Vulkan backend results in black screen
-- "Right Click game>Properties>Edit/View config" results in "Couldn't find open command for extension 'ini'!" error message.
-- Starting a netplay game takes comparetively much longer to start up
 ## Troubleshooting
 - Check if Flatpak is installed
 ```console
