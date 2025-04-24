@@ -65,7 +65,7 @@ modules:
       # Project Plus Ishiiruka/Dolphin emulator fork
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
-        commit: 49ac69f750e0f1c6422da114d630a2532f290db2
+        commit: b4580b633902a2964160c9c895da8872b29da689
 
       # Move wx files into source
       - type: shell
@@ -100,19 +100,19 @@ modules:
 
       # Project Plus SD card
       - type: file
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.0.5/sd.tar.gz
-        sha256: e8ef3df5a2f4cdc59dec3d5c08b3e26e5156ce51fcddb16ac8bd839f4ef54089 # This is the hash of the tar.gz file not the uncompressed
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.1.0/sd.tar.gz
+        sha256: 67e7c1598215fd8abae7911d246a0853c620a23055c13e20dc32b26d62bf0d50 # This is the hash of the tar.gz file not the uncompressed
 
       # Project Plus .dol files and icon
       - type: archive
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.0.5/Launcher.tar.gz
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.1.0/Launcher.tar.gz
         sha256: 1b9dce2fb0eac3ad8cc809826b3b6bfd4ce30dbfc394eaa586e35dcd356fd189 # This is the hash of the tar.gz file not the uncompressed
         dest: Launcher
 
       # Project Plus ModPack that contains HD textures
       - type: archive
-        url: https://github.com/jlambert360/PPlusReleases/releases/download/v3.0.5/Project+.v3.0.5.Modders.Pack.zip
-        sha256: 04b8902dcddd5cdbf14e1eca7ba552158a1853f6e1cfe4f8daf72b48a1d4eb51 # This is the hash of the zip file not the uncompressed
+        url: https://github.com/jlambert360/PPlusReleases/releases/download/v3.1.0/Project+.v3.1.0.Modders.Pack.zip
+        sha256: 9480e6db4d523d2a371bf710f8bd509f4cbd14e40760f10fc5f5067aefdaf1a1 # This is the hash of the zip file not the uncompressed
         dest: ModPack
 
       # Metadata file for Flatpak repos
@@ -183,38 +183,32 @@ modules:
         dest-filename: ishiiruka-wrapper
 
     post-install:
-      # Install ishiiruka-wrapper script
       - |
+        # Install ishiiruka-wrapper script
         echo "Installing ishiiruka-wrapper in /app/bin/"
         install -D -t /app/bin/ ishiiruka-wrapper
 
-      # Change exec of desktop file to launch ishiiruka-wrapper instead of ishiiruka
-      - |
+        # Change exec of desktop file to launch ishiiruka-wrapper instead of ishiiruka
         echo "Changing exec of /app/share/applications/faster-project-plus.desktop file to launch ishiiruka-wrapper instead of ishiiruka"
         desktop-file-edit --set-key=Exec --set-value='/app/bin/ishiiruka-wrapper' /app/share/applications/faster-project-plus.desktop
 
-      # Install metainfo file in Flatpak
-      - |
+        # Install metainfo file in Flatpak
         echo "Installing com.projectplusgame.ProjectPlus.metainfo.xml in /app/share/metainfo/"
         install -Dm644 -t /app/share/metainfo/ com.projectplusgame.ProjectPlus.metainfo.xml
 
-      # Move /app/bin/Sys to /app/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
-      - |
+        # Move /app/bin/Sys to /app/share/ishiiruka/sys (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
         echo "Moving /app/bin/Sys to /app/share/ishiiruka/sys"
         mv /app/bin/Sys /app/share/ishiiruka/sys
 
-      # Extract and move sd.tar.gz to /app/share/ishiiruka/sys/Wii
-      - |
+        # Extract and move sd.tar.gz to /app/share/ishiiruka/sys/Wii
         echo "Extracting and moving sd.tar.gz to /app/share/ishiiruka/sys/Wii"
         tar -xf sd.tar.gz -C /app/share/ishiiruka/sys/Wii
 
-      # Move Launcher directory with .dol files and icon to /app/share/ishiiruka/sys/Wii
-      - |
+        # Move Launcher directory with .dol files and icon to /app/share/ishiiruka/sys/Wii
         echo "Moving Launcher directory to /app/share/ishiiruka/sys/Wii"
         mv Launcher /app/share/ishiiruka/sys/Wii
 
-      # Create Textures directory, move and rename ModPack HD textures directory to /app/share/ishiiruka/user/Load/Textures/RSBE01
-      - |
+        # Create Textures directory, move and rename ModPack HD textures directory to /app/share/ishiiruka/user/Load/Textures/RSBE01
         echo "Creating /app/share/ishiiruka/user/Load/Textures"
         mkdir /app/share/ishiiruka/user/Load/Textures
         echo "Moving and renaming HD textures directory to /app/share/ishiiruka/user/Load/Textures/RSBE01"
