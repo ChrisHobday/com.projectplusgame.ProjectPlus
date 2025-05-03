@@ -65,7 +65,7 @@ modules:
       # Project Plus Ishiiruka/Dolphin emulator fork
       - type: git
         url: https://github.com/jlambert360/Ishiiruka.git
-        commit: 1a1b43a6adddf96627a71a5a6709bc69b2491d8d
+        commit: 5a745d41b9c8a2051ebe47e61247b4a4726c1573
 
       # Move wx files into source
       - type: shell
@@ -100,19 +100,19 @@ modules:
 
       # Project Plus SD card
       - type: file
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.1.1/sd.tar.gz
-        sha256: 25dffdaaee050a9c8b079f06aa8663fde94a537744c4ada25cb05b5c5dec7aa4 # This is the hash of the tar.gz file not the uncompressed
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.1.2/sd.tar.gz
+        sha256: 389e4025ed3e0a79a1d0646dcc97bbd204fdfad371be72f913f59aa172f531fd # This is the hash of the tar.gz file not the uncompressed
 
       # Project Plus .dol files and icon
       - type: archive
-        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.1.1/Launcher.tar.gz
+        url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.1.2/Launcher.tar.gz
         sha256: 1b9dce2fb0eac3ad8cc809826b3b6bfd4ce30dbfc394eaa586e35dcd356fd189 # This is the hash of the tar.gz file not the uncompressed
         dest: Launcher
 
       # Project Plus ModPack that contains HD textures
       - type: archive
-        url: https://github.com/jlambert360/PPlusReleases/releases/download/v3.1.1/Project+.v3.1.1.Modders.Pack.zip
-        sha256: f71c245e15591bb896009a45a03f767b277f4556d7e43573b531ddd82e8c5cee # This is the hash of the zip file not the uncompressed
+        url: https://github.com/jlambert360/PPlusReleases/releases/download/v3.1.2/Project+.v3.1.2.Modders.Pack.zip
+        sha256: 291549549a88617f8f72cf549023da9af154493b75da7a8192245ed98c101ba3 # This is the hash of the zip file not the uncompressed
         dest: ModPack
 
       # Metadata file for Flatpak repos
