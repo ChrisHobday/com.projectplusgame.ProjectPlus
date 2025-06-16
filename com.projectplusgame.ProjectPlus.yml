@@ -181,7 +181,6 @@ modules:
             # Launch ishiiruka binary
             ishiiruka "$@"
         dest-filename: ishiiruka-wrapper
-
     post-install:
       - |
         # Install ishiiruka-wrapper script
