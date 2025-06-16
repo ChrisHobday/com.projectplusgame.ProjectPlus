@@ -65,10 +65,9 @@ modules:
 
       # TODO: Add x-checker-data
       # Project Plus SD card
-      - type: archive
+      - type: file
         url: https://github.com/jlambert360/FPM-AppImage/releases/download/v3.1.2/sd.tar.gz
         sha256: 389e4025ed3e0a79a1d0646dcc97bbd204fdfad371be72f913f59aa172f531fd            # This is the hash of the tar.gz file not the uncompressed
-        dest: sd.raw
 
       # TODO: Add x-checker-data
       # Project Plus .dol files and icon
@@ -84,74 +83,13 @@ modules:
         sha256: 291549549a88617f8f72cf549023da9af154493b75da7a8192245ed98c101ba3 # This is the hash of the zip file not the uncompressed
         dest: ModPack
 
+      # Script that is ran everytime the final Flatpak starts
+      - type: file
+        path: Scripts/dolphin-wrapper.sh
+
       # Metadata file for Flatpak repos
       - type: file
         path: com.projectplusgame.ProjectPlus.metainfo.xml
-
-      # The script that is run when the Flatpak is started everytime
-      - type: script
-        commands:
-          - |
-            #!/bin/sh
-
-            # Setup Discord rich presence
-            echo "Setting up Discord rich presence"
-            for i in {0..9}; do
-              test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
-                ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
-            done
-
-            # This is a bit of a hacky way to get the sd.raw, Launcher directory, and patched Dolphin.ini/GFX.ini into the Flatpak user var directory, because the installation directory for Flatpaks is not writable and so we cannot use portable.txt + the User directory beside the binary
-            echo "Make directory /var/data/ProjectPlus/Wii if it doesn't exist"
-            mkdir -p /var/data/ProjectPlus/Wii
-
-            echo "Make directory /var/config/ProjectPlus if it doesn't exist"
-            mkdir -p /var/config/ProjectPlus
-
-            # Create and set variables for the system and user SD card creation dates
-            SystemSDCardCreationDate=`stat --format="%W" /app/share/dolphin-emu/sys/Wii/sd.raw`
-            UserSDCardCreationDate=`stat --format="%W" /var/data/ProjectPlus/Wii/sd.raw`
-
-            # Check if the system SD card creation date is newer than the user SD card creation date (There has been an update), or there is no user SD card
-            echo "Checking if there is a newer SD card version"
-            if [ $SystemSDCardCreationDate -gt ${UserSDCardCreationDate:=0} ];
-            then
-              # Copy newer SD card to user data directory
-              echo "Copying newer SD card to user data directory"
-              cp /app/share/dolphin-emu/sys/Wii/sd.raw /var/data/ProjectPlus/Wii/sd.raw
-            else
-              echo "SD card is already at latest version"
-            fi
-
-            echo "Copy /app/share/dolphin-emu/sys/Wii/Launcher to /var/data/ProjectPlus/Wii if it doesn't already exist"
-            cp -nr /app/share/dolphin-emu/sys/Wii/Launcher /var/data/ProjectPlus/Wii
-
-            echo "Copy user config /app/share/dolphin-emu/user/Config/Dolphin.ini and GFX.ini to /var/config/ProjectPlus/Dolphin.ini and GFX.ini if they don't already exist"
-            cp -n /app/share/dolphin-emu/user/Config/Dolphin.ini /var/config/ProjectPlus/Dolphin.ini
-            cp -n /app/share/dolphin-emu/user/Config/GFX.ini /var/config/ProjectPlus/GFX.ini
-
-            # Create and set variables for the system and user HD textures creation dates
-            SystemHDTexturesCreationDate=`stat --format="%W" /app/share/dolphin-emu/user/Load/Textures/RSBE01`
-            UserHDTexturesCreationDate=`stat --format="%W" /var/data/ProjectPlus/Load/Textures/RSBE01`
-
-            # Check if the system HD textures creation date is newer than the user HD textures creation date (There has been an update), or there is no user HD textures
-            echo "Checking if there are newer HD textures"
-            if [ $SystemHDTexturesCreationDate -gt ${UserHDTexturesCreationDate:=0} ];
-            then
-              # Make /var/data/ProjectPlus/Load/Textures directory if it doesn't exist
-              echo "Make directory /var/data/ProjectPlus/Load/Textures if it doesn't exist"
-              mkdir -p /var/data/ProjectPlus/Load/Textures
-
-              # Copy newer HD textures to user data directory
-              echo "Copying newer HD textures to user data directory"
-              cp -r /app/share/dolphin-emu/user/Load/Textures/RSBE01 /var/data/ProjectPlus/Load/Textures
-            else
-              echo "HD textures are already at latest version"
-            fi
-
-            # Launch dolphin
-            dolphin-emu "$@"
-        dest-filename: dolphin-wrapper
     config-opts:
       # - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there by default (if this is turned off make sure the Sys directory is being moved to /app/share/ishiiruka/sys instead)
       - -DINSTALL_ICONS=ON
@@ -164,14 +102,10 @@ modules:
         echo "POST Install ls"
         ls
 
-        install -Dm744 dolphin-wrapper -t ${FLATPAK_DEST}/bin/                                                              # Install script that will act as the launch command when the Flatpak it is ran
+        install -Dm744 dolphin-wrapper.sh -t ${FLATPAK_DEST}/bin/                                                           # Install script that will act as the launch command when the Flatpak it is ran
         desktop-file-edit --set-key=Exec --set-value='/app/bin/dolphin-wrapper' /app/share/applications/dolphin-emu.desktop # Change exec of desktop file to launch dolphin-wrapper instead of dolphin-emu
         mv Data/Sys /app/share/dolphin-emu/sys                                                                              # Move Sys directory to correct location (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
-
-        # # Extract and move sd.tar.gz to /app/share/dolphin-emu/sys/Wii
-        # echo "Extracting and moving sd.tar.gz to /app/share/dolphin-emu/sys/Wii"
-        # tar -xf sd.tar.gz -C /app/share/dolphin-emu/sys/Wii
-
+        tar -xf sd.tar.gz -C /app/share/dolphin-emu/sys/Wii                                                                 # Extract and move SD card to correct location
         install -Dm744 sd.raw -t ${FLATPAK_DEST}/share/dolphin-emu/sys/Wii                                                  # Install sd.raw in correct location
         mv Launcher /app/share/ishiiruka/sys/Wii/                                                                           # Move Launcher directory to correct location
         mkdir -p /app/share/ishiiruka/user/Load/Textures                                                                    # Make directory for HD textures
