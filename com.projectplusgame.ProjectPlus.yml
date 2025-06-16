@@ -106,11 +106,10 @@ modules:
         desktop-file-edit --set-key=Exec --set-value='/app/bin/dolphin-wrapper' /app/share/applications/dolphin-emu.desktop # Change exec of desktop file to launch dolphin-wrapper instead of dolphin-emu
         mv Data/Sys /app/share/dolphin-emu/sys                                                                              # Move Sys directory to correct location (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
         tar -xf sd.tar.gz -C /app/share/dolphin-emu/sys/Wii                                                                 # Extract and move SD card to correct location
-        install -Dm744 sd.raw -t ${FLATPAK_DEST}/share/dolphin-emu/sys/Wii                                                  # Install sd.raw in correct location
-        mv Launcher /app/share/ishiiruka/sys/Wii/                                                                           # Move Launcher directory to correct location
-        mkdir -p /app/share/ishiiruka/user/Load/Textures                                                                    # Make directory for HD textures
-        mv 'ModPack/Full Quality HD Textures' /app/share/ishiiruka/user/Load/Textures/RSBE01                                # Move HD Textures from ModPack to correct location
-        install -Dm644 /app/share/metainfo/ -t com.projectplusgame.ProjectPlus.metainfo.xml                                 # Install metainfo file
+        mv Launcher /app/share/dolphin-emu/sys/Wii/                                                                         # Move Launcher directory to correct location
+        mkdir -p /app/share/dolphin-emu/user/Load/Textures                                                                  # Make directory for HD textures
+        mv 'ModPack/Full Quality HD Textures' /app/share/dolphin-emu/user/Load/Textures/RSBE01                              # Move HD Textures from ModPack to correct location
+        install -Dm644 com.projectplusgame.ProjectPlus.metainfo.xml -t /app/share/metainfo/                                 # Install metainfo file
 
 
 
