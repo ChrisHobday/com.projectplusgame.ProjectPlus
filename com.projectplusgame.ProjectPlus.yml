@@ -102,14 +102,15 @@ modules:
         echo "POST Install ls"
         ls
 
-        install -Dm744 dolphin-wrapper.sh -t ${FLATPAK_DEST}/bin/                                                           # Install script that will act as the launch command when the Flatpak it is ran
-        desktop-file-edit --set-key=Exec --set-value='/app/bin/dolphin-wrapper' /app/share/applications/dolphin-emu.desktop # Change exec of desktop file to launch dolphin-wrapper instead of dolphin-emu
-        mv Data/Sys /app/share/dolphin-emu/sys                                                                              # Move Sys directory to correct location (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
-        tar -xf sd.tar.gz -C /app/share/dolphin-emu/sys/Wii                                                                 # Extract and move SD card to correct location
-        mv Launcher /app/share/dolphin-emu/sys/Wii/                                                                         # Move Launcher directory to correct location
-        mkdir -p /app/share/dolphin-emu/user/Load/Textures                                                                  # Make directory for HD textures
-        mv 'ModPack/Full Quality HD Textures' /app/share/dolphin-emu/user/Load/Textures/RSBE01                              # Move HD Textures from ModPack to correct location
-        install -Dm644 com.projectplusgame.ProjectPlus.metainfo.xml -t /app/share/metainfo/                                 # Install metainfo file
+        install -Dm744 dolphin-wrapper.sh -t ${FLATPAK_DEST}/bin/                                                                         # Install script that will act as the launch command when the Flatpak it is ran
+        desktop-file-edit --set-key=Exec --set-value='/app/bin/dolphin-wrapper.sh' ${FLATPAK_DEST}/share/applications/dolphin-emu.desktop # Change exec of desktop file to launch dolphin-wrapper instead of dolphin-emu
+        rm -r ${FLATPAK_DEST}/share/dolphin-emu/sys                                                                                       # Remove preinstalled sys directory
+        mv Data/Sys ${FLATPAK_DEST}/share/dolphin-emu/sys                                                                                 # Move Sys directory to correct location (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
+        tar -xf sd.tar.gz -C ${FLATPAK_DEST}/share/dolphin-emu/sys/Wii                                                                    # Extract and move SD card to correct location
+        mv Launcher ${FLATPAK_DEST}/share/dolphin-emu/sys/Wii/                                                                            # Move Launcher directory to correct location
+        mkdir -p ${FLATPAK_DEST}/share/dolphin-emu/user/Load/Textures                                                                     # Make directory for HD textures
+        mv 'ModPack/Full Quality HD Textures' ${FLATPAK_DEST}/share/dolphin-emu/user/Load/Textures/RSBE01                                 # Move HD Textures from ModPack to correct location
+        install -Dm644 com.projectplusgame.ProjectPlus.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo/                                    # Install metainfo file
 
 
 
