@@ -1,49 +1,20 @@
-diff --git a/Data/User/Config/Dolphin.ini b/Data/User/Config/Dolphin.ini
-index 60e7a90c8..60dae019e 100644
---- a/Data/User/Config/Dolphin.ini
-+++ b/Data/User/Config/Dolphin.ini
-@@ -1,14 +1,13 @@
+diff --git a/Data/user/Config/Dolphin.ini b/Data/user/Config/Dolphin.ini
+index 63b33be4b3..945bda7667 100644
+--- a/Data/user/Config/Dolphin.ini
++++ b/Data/user/Config/Dolphin.ini
+@@ -1,10 +1,9 @@
  [General]
- ShowLag = False
- ShowFrameCount = False
 -ISOPaths = 2
 +ISOPaths = 1
  RecursiveISOPaths = False
- NANDRootPath = 
- DumpPath = 
- WirelessMac = 
--WiiSDCardPath = ./User/Wii/sd.raw
+-WiiSDCardPath = ./user/Wii/sd.raw
+-WiiSDCardSyncFolder = ./user/Load/WiiSDSync/
 -ISOPath0 = ./Launcher
 -ISOPath1 = ./Games
-+WiiSDCardPath = /var/data/FasterPPlus/Wii/sd.raw
-+ISOPath0 = /var/data/FasterPPlus/Wii/Launcher
- [Interface]
- ConfirmStop = False
- UsePanicHandlers = False
-@@ -124,7 +123,7 @@ EmulationSpeed = 1.00000000
- FrameSkip = 0x00000000
- Overclock = 1.00000000
- OverclockEnable = False
--GFXBackend = DX11
-+GFXBackend = OGL
- GPUDeterminismMode = fake-completion
- PerfMapDir = 
- EnableCustomRTC = False
-@@ -147,7 +146,7 @@ EnableJIT = True
- DumpAudio = False
- DumpAudioSilent = False
- DumpUCode = False
--Backend = Cubeb
-+Backend = Pulse
- Volume = 10
- CaptureLog = False
- WASAPIDevice = default
-@@ -176,7 +175,7 @@ Devices =
- TrackForTesting = 
- HashOverride = 
++WiiSDCardPath = /var/data/dolphin-emu/Load/WiiSD.raw
++WiiSDCardSyncFolder = /var/data/dolphin-emu/Load/WiiSDSync/
++ISOPath0 = /var/data/dolphin-emu/Wii/Launcher
  [NetPlay]
--SelectedHostGame = Project+ Netplay Launcher.elf
-+SelectedHostGame = Project+ Netplay Launcher.dol
- ConnectPort = 0x0a42
- HostCode = 00000000
- HostPort = 0x0a42
+ SelectedHostGame = Project+ Netplay Launcher.dol
+ TraversalChoice = traversal
+\ No newline at end of file

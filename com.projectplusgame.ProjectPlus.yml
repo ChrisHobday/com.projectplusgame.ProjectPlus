@@ -61,7 +61,11 @@ modules:
       # Forked mainline Dolphin version Project Plus
       - type: git
         url: https://github.com/Motobug/Project-Plus-Dolphin
-        commit: 5d6587aa06640771631cca231e34b32b2e6af876
+        commit: eb9390e9d37ff027c9994b397b246fb0b810f8c3
+
+      # Patches Data/user/Config/Dolphin.ini to set proper paths
+      - type: patch
+        path: dolphinini.patch
 
       # TODO: Add x-checker-data
       # Project Plus SD card
@@ -91,7 +95,7 @@ modules:
       - type: file
         path: com.projectplusgame.ProjectPlus.metainfo.xml
     config-opts:
-      # - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin look for the Sys directory in the same directory as the binary and the repo we are pulling from places the Sys directory there by default (if this is turned off make sure the Sys directory is being moved to /app/share/ishiiruka/sys instead)
+      # - -DLINUX_LOCAL_DEV=true # This flag makes Dolphin look for the Sys directory in the same directory as the binary (if this is turned off make sure the Sys directory is being moved to ${FLATPAK_DEST}/share/dolphin-emu/sys instead)
       - -DINSTALL_ICONS=ON
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_SDL=ON
