@@ -31,7 +31,6 @@ modules:
 
   # For motion controls on non-wii controllers (Switch, PS4, etc) (Requires a udev rule enabling Motion Sensors access)
   - name: libevdev
-    buildsystem: meson
     config-opts:
       - -Dtests=disabled
       - -Ddocumentation=disabled
@@ -44,18 +43,18 @@ modules:
           project-id: 20540
           stable-only: true
           url-template: https://www.freedesktop.org/software/libevdev/libevdev-$version.tar.xz
+    buildsystem: meson
 
   # For screensaver inhibition
   - name: xdg-screensaver-shim
-    buildsystem: meson
     sources:
       - type: archive
         url: https://github.com/Unrud/xdg-screensaver-shim/archive/0.0.2.tar.gz
         sha256: 0ed2a69fe6ee6cbffd2fe16f85116db737f17fb1e79bfb812d893cf15c728399
+    buildsystem: meson
 
   # Forked mainline Dolphin version Project Plus uses, preloaded with sd.raw, .dol and launcher files
   - name: dolphin
-    buildsystem: cmake
     sources:
       # TODO: Add x-checker-data
       # Forked mainline Dolphin version Project Plus
@@ -63,7 +62,7 @@ modules:
         url: https://github.com/Motobug/Project-Plus-Dolphin
         commit: eb9390e9d37ff027c9994b397b246fb0b810f8c3
 
-      # Patches Data/user/Config/Dolphin.ini to set proper paths
+      # Patches Data/user/Config/Dolphin.ini to set proper paths for Flatpak to find stuff
       - type: patch
         path: dolphinini.patch
 
@@ -101,16 +100,24 @@ modules:
       - -DENABLE_SDL=ON
       - -DENABLE_EVDEV=ON
       - -DDISTRIBUTOR=Flathub
+    buildsystem: cmake
     post-install:
       - |
         install -Dm744 dolphin-wrapper.sh -t ${FLATPAK_DEST}/bin/                                                                         # Install script that will act as the launch command when the Flatpak it is ran
+
         desktop-file-edit --set-key=Exec --set-value='/app/bin/dolphin-wrapper.sh' ${FLATPAK_DEST}/share/applications/dolphin-emu.desktop # Change exec of desktop file to launch dolphin-wrapper instead of dolphin-emu
+
         rm -r ${FLATPAK_DEST}/share/dolphin-emu/sys                                                                                       # Remove preinstalled sys directory
-        mv Data/Sys ${FLATPAK_DEST}/share/dolphin-emu/sys                                                                                 # Move Sys directory to correct location (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
+        mv Data/Sys ${FLATPAK_DEST}/share/dolphin-emu/sys/                                                                                # Move Sys directory to correct location (only use this without the -DLINUX_LOCAL_DEV=true flag set in config-opts)
+
         rm -r ${FLATPAK_DEST}/share/dolphin-emu/user                                                                                      # Remove preinstalled user directory
-        mv Data/user ${FLATPAK_DEST}/share/dolphin-emu/user                                                                               # Move user directory to correct location
-        tar -xf sd.tar.gz -C ${FLATPAK_DEST}/share/dolphin-emu/sys/Wii                                                                    # Extract and move SD card to correct location
+        mv Data/user ${FLATPAK_DEST}/share/dolphin-emu/user/                                                                              # Move user directory to correct location
+
+        tar --transform="s|sd.raw|WiiSD.raw|" -xf sd.tar.gz -C ${FLATPAK_DEST}/share/dolphin-emu/sys/Load/                                # Extract, rename and move SD card to correct location
+
         mv Launcher ${FLATPAK_DEST}/share/dolphin-emu/sys/Wii/                                                                            # Move Launcher directory to correct location
-        mkdir -p ${FLATPAK_DEST}/share/dolphin-emu/user/Load/Textures                                                                     # Make directory for HD textures
-        mv 'ModPack/Full Quality HD Textures' ${FLATPAK_DEST}/share/dolphin-emu/user/Load/Textures/RSBE01                                 # Move HD Textures from ModPack to correct location
+
+        mkdir -p ${FLATPAK_DEST}/share/dolphin-emu/sys/Load/Textures                                                                      # Make directory for HD textures
+        mv "ModPack/Full Quality HD Textures" ${FLATPAK_DEST}/share/dolphin-emu/sys/Load/Textures/RSBE01/                                 # Move HD Textures from ModPack to correct location
+
         install -Dm644 com.projectplusgame.ProjectPlus.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo/                                    # Install metainfo file
