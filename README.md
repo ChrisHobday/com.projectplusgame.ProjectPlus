@@ -1,7 +1,7 @@
 # Project Plus Flatpak (Unofficial)
 ## Installing
 - Download ProjectPlus3.1.2.flatpak from releases
-- Install ProjectPlus3.1.2.flatpak (sudo needed for installing single use Flatpak bundle)
+- Install ProjectPlus3.1.2.flatpak
 ```console
 flatpak install --user ProjectPlus3.1.2.flatpak
 ```
