@@ -3,7 +3,7 @@
 - Download ProjectPlus3.1.2.flatpak from releases
 - Install ProjectPlus3.1.2.flatpak (sudo needed for installing single use Flatpak bundle)
 ```console
-sudo flatpak install ProjectPlus3.1.2.flatpak
+flatpak install --user ProjectPlus3.1.2.flatpak
 ```
 ## Running
 ```console
@@ -41,10 +41,9 @@ flatpak run --command=sh com.projectplusgame.ProjectPlus
 rm -r ~/.var/app/com.projectplusgame.ProjectPlus/cache/
 ```
 ## Flatpak locations
-- Installation directory             = /var/lib/flatpak/app/com.projectplusgame.ProjectPlus/
 - Installation directory (User mode) = ~/.local/share/flatpak/app/com.projectplusgame.ProjectPlus/
 - User cache directory               = ~/.var/app/com.projectplusgame.ProjectPlus/cache/
 - User config directory              = ~/.var/app/com.projectplusgame.ProjectPlus/config/
 - User data directory                = ~/.var/app/com.projectplusgame.ProjectPlus/data/
-- SD card                            = ~/.var/app/com.projectplusgame.ProjectPlus/data/FasterPPlus/Wii/sd.raw
-- Launcher directory                 = ~/.var/app/com.projectplusgame.ProjectPlus/data/FasterPPlus/Wii/Launcher/
+- SD card                            = ~/.var/app/com.projectplusgame.ProjectPlus/data/dolphin-emu/Load/WiiSD.raw
+- Launcher directory                 = ~/.var/app/com.projectplusgame.ProjectPlus/data/dolphin-emu/Wii/Launcher/
