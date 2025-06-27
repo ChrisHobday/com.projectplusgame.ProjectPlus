@@ -60,7 +60,8 @@ modules:
       # Forked mainline Dolphin version Project Plus
       - type: git
         url: https://github.com/Motobug/Project-Plus-Dolphin
-        commit: c566ba80bb75f0e163779bdfeb042327fcd8891c
+        tag: v3.1.2-mainline-beta.2
+        commit: f033dcfa43b74fd555bc644441cfff450134a6a9
 
       # Patches Data/user/Config/Dolphin.ini to set proper paths for Flatpak to find stuff
       - type: patch
